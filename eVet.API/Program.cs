@@ -1,3 +1,6 @@
+using eVet.Services.Database;
+using Microsoft.AspNetCore.Components.Forms;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+var connectionString = builder.Configuration.GetConnectionString("eVetConnection");
+builder.Services.AddDbContext<_210210Context>(options =>
+options.UseSqlServer(connectionString));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

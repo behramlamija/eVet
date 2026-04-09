@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="../../source/repos/eVet/eVet.API/eVet.API.csproj" />
-  <Project Path="../../source/repos/eVet/eVet.Services/eVet.Services.csproj" />
+  <Project Path="eVet.API/eVet.API.csproj" />
+  <Project Path="eVet.Services/eVet.Services.csproj" />
   <Project Path="eVet.Model/eVet.Model.csproj" />
 </Solution>
