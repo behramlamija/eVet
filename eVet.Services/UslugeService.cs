@@ -1,27 +1,34 @@
 ﻿using eVet.Model;
+using eVet.Model.SearchObjects;
+using eVet.Services.Database;
+using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace eVet.Services
 {
-    public class UslugeService: IUslugeService
+    public class UslugeService: BaseService<Model.Usluge, UslugeSearchObject, Database.Usluga>, IUslugeService
     {
-        public List<Usluge> List = new List<Usluge>()
+       
+        public UslugeService(_210210Context context, IMapper mapper):base(context, mapper)
         {
-           new Usluge()
-           {
-
-           },
-           new Usluge()
-              {
-
-              }
-        };
-
-        public List<Usluge> GetAll()
-        {
-            return List;
+            Context = context;
+            Mapper = mapper;
         }
+      
+        public override IQueryable<Database.Usluga> AddFilter(UslugeSearchObject search, IQueryable<Database.Usluga> query)
+        {
+            var filteredQuery = base.AddFilter(search, query);
+
+            if(!string.IsNullOrEmpty(search.FTS))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Naziv.Contains(search.FTS) || x.Opis.Contains(search.FTS));
+            }
+
+            return filteredQuery;
+        }
+
     }
 }
