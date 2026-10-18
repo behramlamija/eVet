@@ -1,20 +1,14 @@
-﻿using eVet.Model;
+using eVet.Model;
+using eVet.Model.Requests;
 using eVet.Model.SearchObjects;
 using eVet.Services;
-using eVet.Services.Database;
-using Microsoft.AspNetCore.Mvc;
 
 namespace eVet.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class VrstaUslugeController:BaseController<Model.VrstaUsluge,VrstaUslugeSearchObject>
+    public class VrstaUslugeController : VlasnikCRUDController<VrstaUsluge, NazivSearchObject, VrstaUslugeUpsertRequest, VrstaUslugeUpsertRequest>
     {
-
-        public VrstaUslugeController(IVrsteUslugaService service):base(service)
+        public VrstaUslugeController(IVrsteUslugaService service) : base(service)
         {
-            _service = service;
         }
-
     }
 }

@@ -1,43 +1,17 @@
 ﻿using eVet.Model;
+using eVet.Model.Constants;
 using eVet.Model.Requests;
 using eVet.Model.SearchObjects;
 using eVet.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eVet.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class KorisniciController : ControllerBase
+    [Authorize(Roles = Uloge.Vlasnik)]
+    public class KorisniciController : BaseCRUDController<Korisnici, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>
     {
-
-        protected IKorisniciService _service;
-
-        public KorisniciController(IKorisniciService service)
+        public KorisniciController(IKorisniciService service) : base(service)
         {
-            _service = service;
-        }
-
-        [HttpGet]
-        public PagedResult<Korisnici> GetAll([FromQuery]KorisniciSearchObject searchObject)
-        {
-            return _service.GetAll(searchObject);
-        }
-
-
-        [HttpPost]
-        public Korisnici Insert(KorisniciInsertRequest request)
-        {
-            return _service.Insert(request);
-        }
-
-
-        [HttpPut("{id}")]
-        public Korisnici Update(int id, KorisniciUpdateRequest request)
-        {
-            return _service.Update(id, request);
-
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace eVet.Model
+namespace eVet.Model
 {
     public class Usluge
     {
@@ -12,7 +12,12 @@
 
         public int Trajanje { get; set; }
 
-  
+        public int VrstaId { get; set; }
 
+        public string VrstaNaziv { get; set; } = null!;
+
+        public DateTime DatumObjavljivanja { get; set; }
+
+        public bool ImaSliku { get; set; }
     }
 }

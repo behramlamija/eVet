@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class Promocija
+public partial class Promocija : ISoftDelete
 {
     public int PromocijaId { get; set; }
 
@@ -21,13 +18,13 @@ public partial class Promocija
 
     public int UslugaId { get; set; }
 
-    public bool Status { get; set; }
+    public bool JeAktivna { get; set; } = true;
 
     public bool IsDeleted { get; set; }
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public virtual ICollection<AktiviranaPromocija> AktiviranaPromocijas { get; set; } = new List<AktiviranaPromocija>();
+    public virtual ICollection<AktiviranaPromocija> AktiviranePromocije { get; set; } = new List<AktiviranaPromocija>();
 
     public virtual Usluga Usluga { get; set; } = null!;
 }

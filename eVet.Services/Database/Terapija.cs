@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class Terapija
+public partial class Terapija : ISoftDelete
 {
     public int TerapijaId { get; set; }
 
@@ -22,6 +19,8 @@ public partial class Terapija
     public string? Napomena { get; set; }
 
     public DateTime DatumTerapije { get; set; }
+
+    public int? TrajanjeDana { get; set; }
 
     public DateOnly? DatumKontrolnog { get; set; }
 

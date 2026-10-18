@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class Obavijest
+public partial class Obavijest : ISoftDelete
 {
     public int ObavijestId { get; set; }
 

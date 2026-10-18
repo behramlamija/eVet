@@ -1,15 +1,19 @@
 ﻿using eVet.Model;
-using eVet.Services.Database;
 using eVet.Model.Requests;
 using eVet.Model.SearchObjects;
 
 namespace eVet.Services
 {
-    public interface IKorisniciService
+    public interface IKorisniciService : ICRUDService<Korisnici, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>
     {
-        PagedResult<Korisnici> GetAll(KorisniciSearchObject searchObject);
-        Korisnici Insert (KorisniciInsertRequest request);
-        Korisnici Update (int id, KorisniciUpdateRequest request);
+        Task<PagedResult<KorisnikOsnovno>> GetPoUloziAsync(string uloga, KorisnikOsnovnoSearchObject search, CancellationToken cancellationToken = default);
 
+        Task<Korisnici> RegistracijaAsync(RegistracijaRequest request, CancellationToken cancellationToken = default);
+
+        Task<Korisnici> GetProfilAsync(CancellationToken cancellationToken = default);
+
+        Task<Korisnici> UpdateProfilAsync(ProfilUpdateRequest request, CancellationToken cancellationToken = default);
+
+        Task PromijeniLozinkuAsync(PromjenaLozinkeRequest request, CancellationToken cancellationToken = default);
     }
 }

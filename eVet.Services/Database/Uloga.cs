@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class Uloga
+public partial class Uloga : ISoftDelete
 {
     public int UlogaId { get; set; }
 
@@ -15,5 +12,5 @@ public partial class Uloga
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public virtual ICollection<KorisniciUloge> KorisniciUloges { get; set; } = new List<KorisniciUloge>();
+    public virtual ICollection<KorisnikUloga> KorisniciUloge { get; set; } = new List<KorisnikUloga>();
 }

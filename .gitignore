@@ -87,3 +87,5 @@ project.nuget.cache
 # Assembly info
 *.AssemblyInfo.cs
 *.AssemblyInfoInputs.cache
+# Konfiguracijske tajne
+.env

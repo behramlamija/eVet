@@ -1,15 +1,12 @@
 ﻿using eVet.Model;
 using eVet.Model.SearchObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace eVet.Services
 {
-    public interface IService <TModel, TSearch> where TSearch:BaseSearchObject
+    public interface IService<TModel, TSearch> where TSearch : BaseSearchObject
     {
-        public PagedResult<TModel> GetPaged(TSearch search);
+        Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default);
 
-        public TModel GetById(int id);
+        Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     }
 }

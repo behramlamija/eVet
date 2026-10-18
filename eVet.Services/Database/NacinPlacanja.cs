@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class NacinPlacanja
+public partial class NacinPlacanja : ISoftDelete
 {
     public int NacinPlacanjaId { get; set; }
 
@@ -13,5 +10,5 @@ public partial class NacinPlacanja
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public virtual ICollection<Termin> Termins { get; set; } = new List<Termin>();
+    public virtual ICollection<Termin> Termini { get; set; } = new List<Termin>();
 }

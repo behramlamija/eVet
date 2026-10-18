@@ -1,160 +1,261 @@
-﻿using eVet.Model;
+﻿using eVet.Model.Constants;
+using eVet.Model.Exceptions;
 using eVet.Model.Requests;
 using eVet.Model.SearchObjects;
 using eVet.Services.Database;
+using eVet.Services.Security;
+using eVet.Services.Termini;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using System.Linq.Dynamic.Core;
+using Microsoft.Extensions.Caching.Memory;
+
 namespace eVet.Services
 {
-    public class KorisniciService : IKorisniciService
+    public class KorisniciService : BaseCRUDService<Model.Korisnici, KorisniciSearchObject, Korisnik, KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
     {
-        public _210210Context Context { get; set; }
-        public IMapper Mapper { get; set; }
-        public KorisniciService(_210210Context context, IMapper mapper)
+        private readonly ICurrentUserService _currentUser;
+        private readonly IMemoryCache _cache;
+
+        public KorisniciService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, IMemoryCache cache) : base(context, mapper)
         {
-            Context = context;
-            Mapper = mapper;
+            _currentUser = currentUser;
+            _cache = cache;
         }
 
-        public virtual Model.PagedResult<Korisnici> GetAll(KorisniciSearchObject searchObject)
+        protected override string NazivEntiteta => "Korisnik";
+
+        protected override IQueryable<Korisnik> AddFilter(KorisniciSearchObject search, IQueryable<Korisnik> query)
         {
-            List<Model.Korisnici> result = new List<Model.Korisnici>();
-
-            var query = Context.Korisniks.AsQueryable();
-
-            if(!string.IsNullOrWhiteSpace(searchObject.ImeGTE))
-                {
-                    query = query.Where(x => x.Ime.StartsWith(searchObject.ImeGTE));
-            }
-
-            if (!string.IsNullOrWhiteSpace(searchObject.PrezimeGTE))
+            if (!string.IsNullOrWhiteSpace(search.ImeGTE))
             {
-                query = query.Where(x => x.Prezime.StartsWith(searchObject.PrezimeGTE));
+                query = query.Where(x => x.Ime.StartsWith(search.ImeGTE));
             }
 
-            if (!string.IsNullOrWhiteSpace(searchObject.Email))
+            if (!string.IsNullOrWhiteSpace(search.PrezimeGTE))
             {
-                query = query.Where(x => x.Email.StartsWith(searchObject.Email));
+                query = query.Where(x => x.Prezime.StartsWith(search.PrezimeGTE));
             }
 
-            if (!string.IsNullOrWhiteSpace(searchObject.KorisnickoIme))
+            if (!string.IsNullOrWhiteSpace(search.Email))
             {
-                query = query.Where(x => x.KorisnickoIme.StartsWith(searchObject.KorisnickoIme));
+                query = query.Where(x => x.Email.StartsWith(search.Email));
             }
 
-            if (searchObject.IsKorisniciUlogeIncluded == true)
+            if (!string.IsNullOrWhiteSpace(search.KorisnickoIme))
             {
-                query = query.Include(x => x.KorisniciUloges).ThenInclude(x => x.Uloga);
+                query = query.Where(x => x.KorisnickoIme.StartsWith(search.KorisnickoIme));
             }
 
-            int count= query.Count();
-
-            if (!string.IsNullOrWhiteSpace(searchObject.OrderBy))
+            if (search.UlogaId.HasValue)
             {
-                var items= searchObject.OrderBy.Split(',');
-                if(items.Length>2 || items.Length==0)
-                {
-                    throw new Exception("Mozete sortirati samo po jednom polju!");
-                }
-                if (items.Length == 1)
-                {
-                    query = query.OrderBy("@0", searchObject.OrderBy);
-                }
-                else
-                {
-                    query = query.OrderBy(string.Format("{0} {1}", items[0], items[1]));
-                }
-
-                query =query.OrderBy(searchObject.OrderBy);
+                query = query.Where(x => x.KorisniciUloge.Any(ku => ku.UlogaId == search.UlogaId));
             }
 
-            if (searchObject?.Page.HasValue == true && searchObject?.PageSize.HasValue == true)
+            if (search.SpecijalnostId.HasValue)
             {
-                query = query.Skip(searchObject.Page.Value * searchObject.PageSize.Value).Take(searchObject.PageSize.Value);
+                query = query.Where(x => x.SpecijalnostId == search.SpecijalnostId);
             }
 
+            if (search.JeAktivan.HasValue)
+            {
+                query = query.Where(x => x.JeAktivan == search.JeAktivan);
+            }
 
-            
-
-            var list=query.ToList();
-
-            var resultList = Mapper.Map(list, result);
-            Model.PagedResult<Korisnici> response = new Model.PagedResult<Korisnici>();
-
-            response.ResultList = resultList;
-            response.Count = count;
-
-
-            return response;
+            return query;
         }
 
-        public Korisnici Insert(KorisniciInsertRequest request)
+        protected override IQueryable<Korisnik> AddInclude(IQueryable<Korisnik> query)
         {
-            if (request.Lozinka != request.LozinkaPotvrda)
+            return query
+                .Include(x => x.KorisniciUloge).ThenInclude(x => x.Uloga)
+                .Include(x => x.GradRodjenja)
+                .Include(x => x.Specijalnost);
+        }
+
+        protected override async Task BeforeInsertAsync(KorisniciInsertRequest request, Korisnik entity, CancellationToken cancellationToken)
+        {
+            await ProvjeriJedinstvenostAsync(request.KorisnickoIme, request.Email, null, cancellationToken);
+            await PostaviUlogeAsync(entity, request.UlogeIds, cancellationToken);
+            await PostaviPodatkeZaposlenjaAsync(entity, request.GradRodjenjaId, request.SpecijalnostId, cancellationToken);
+            PostaviNovuLozinku(entity, request.Lozinka);
+            entity.DatumRegistracije = DateTime.UtcNow;
+        }
+
+        protected override async Task BeforeUpdateAsync(KorisniciUpdateRequest request, Korisnik entity, CancellationToken cancellationToken)
+        {
+            await ProvjeriJedinstvenostAsync(null, request.Email, entity.KorisnikId, cancellationToken);
+
+            if (entity.KorisnikId == _currentUser.KorisnikId)
             {
-                throw new Exception("Lozinke se ne poklapaju!");
+                if (!request.JeAktivan)
+                {
+                    throw new BusinessException("Ne možete deaktivirati vlastiti korisnički račun.");
+                }
+
+                var vlasnikUloga = await Context.Uloge.FirstAsync(u => u.Naziv == Uloge.Vlasnik, cancellationToken);
+                if (!request.UlogeIds.Contains(vlasnikUloga.UlogaId))
+                {
+                    throw new BusinessException("Ne možete sebi ukloniti ulogu vlasnika.");
+                }
             }
 
-            Database.Korisnik entity = new Database.Korisnik();
+            await PostaviUlogeAsync(entity, request.UlogeIds, cancellationToken);
+            await PostaviPodatkeZaposlenjaAsync(entity, request.GradRodjenjaId, request.SpecijalnostId, cancellationToken);
+
+            bool ponistiPrijave = !request.JeAktivan;
+
+            if (!string.IsNullOrEmpty(request.Lozinka))
+            {
+                PostaviNovuLozinku(entity, request.Lozinka);
+                ponistiPrijave = true;
+            }
+
+            if (ponistiPrijave)
+            {
+                entity.SecurityStamp = Guid.NewGuid().ToString();
+                SecurityStampCache.Ponisti(_cache, entity.KorisnikId);
+            }
+        }
+
+        protected override async Task BeforeDeleteAsync(Korisnik entity, CancellationToken cancellationToken)
+        {
+            if (entity.KorisnikId == _currentUser.KorisnikId)
+            {
+                throw new BusinessException("Ne možete obrisati vlastiti korisnički račun.");
+            }
+
+            var danas = DateOnly.FromDateTime(DateTime.UtcNow);
+            int brojAktivnihTermina = await Context.Termini.CountAsync(t =>
+                (t.VeterinarId == entity.KorisnikId || t.KorisnikId == entity.KorisnikId)
+                && TerminStateMachine.AktivniStatusi.Contains(t.Status)
+                && t.DatumTermina >= danas, cancellationToken);
+
+            if (brojAktivnihTermina > 0)
+            {
+                throw new BusinessException($"Korisnika nije moguće obrisati jer ima aktivnih termina ({brojAktivnihTermina}). Termine je potrebno najprije završiti ili otkazati.");
+            }
+
+            entity.SecurityStamp = Guid.NewGuid().ToString();
+            SecurityStampCache.Ponisti(_cache, entity.KorisnikId);
+        }
+
+        public Task<Model.PagedResult<Model.KorisnikOsnovno>> GetPoUloziAsync(string uloga, KorisnikOsnovnoSearchObject search, CancellationToken cancellationToken = default)
+        {
+            var query = Context.Korisnici.AsNoTracking()
+                .Where(x => x.JeAktivan && x.KorisniciUloge.Any(ku => ku.Uloga.Naziv == uloga));
+
+            if (!string.IsNullOrWhiteSpace(search.FTS))
+            {
+                query = query.Where(x => x.Ime.Contains(search.FTS) || x.Prezime.Contains(search.FTS) || x.Email.Contains(search.FTS));
+            }
+
+            return query
+                .OrderBy(x => x.Prezime).ThenBy(x => x.Ime)
+                .ToPagedResultAsync<Korisnik, Model.KorisnikOsnovno>(query, search, Mapper.Config, cancellationToken);
+        }
+
+        public async Task<Model.Korisnici> RegistracijaAsync(RegistracijaRequest request, CancellationToken cancellationToken = default)
+        {
+            await ProvjeriJedinstvenostAsync(request.KorisnickoIme, request.Email, null, cancellationToken);
+
+            var entity = Mapper.Map<Korisnik>(request);
+            var klijentUloga = await Context.Uloge.FirstAsync(u => u.Naziv == Uloge.Klijent, cancellationToken);
+            entity.KorisniciUloge.Add(new KorisnikUloga { Uloga = klijentUloga });
+            PostaviNovuLozinku(entity, request.Lozinka);
+            entity.JeAktivan = true;
+            entity.DatumRegistracije = DateTime.UtcNow;
+
+            Context.Korisnici.Add(entity);
+            await Context.SaveChangesAsync(cancellationToken);
+
+            return Mapper.Map<Model.Korisnici>(entity);
+        }
+
+        public Task<Model.Korisnici> GetProfilAsync(CancellationToken cancellationToken = default)
+        {
+            return GetByIdAsync(_currentUser.KorisnikId, cancellationToken);
+        }
+
+        public async Task<Model.Korisnici> UpdateProfilAsync(ProfilUpdateRequest request, CancellationToken cancellationToken = default)
+        {
+            var entity = await GetEntityForUpdateAsync(_currentUser.KorisnikId, cancellationToken);
+
+            await ProvjeriJedinstvenostAsync(null, request.Email, entity.KorisnikId, cancellationToken);
+
             Mapper.Map(request, entity);
+            await Context.SaveChangesAsync(cancellationToken);
 
-            entity.LozinkaSalt = GenerateSalt();
-            entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
-
-            Context.Add(entity);
-            Context.SaveChanges();
-
-            return Mapper.Map<Korisnici>(entity);
+            return Mapper.Map<Model.Korisnici>(entity);
         }
 
-
-        public static string GenerateSalt()
+        public async Task PromijeniLozinkuAsync(PromjenaLozinkeRequest request, CancellationToken cancellationToken = default)
         {
-            byte[] byteArray = RandomNumberGenerator.GetBytes(16);
-            return Convert.ToBase64String(byteArray);
-        }
+            var entity = await GetEntityForUpdateAsync(_currentUser.KorisnikId, cancellationToken);
 
-        public static string GenerateHash(string lozinkaSalt, string lozinka)
-        {
-            byte[] src = Convert.FromBase64String(lozinkaSalt);
-            byte[] bytes = Encoding.Unicode.GetBytes(lozinka);
-            byte[] dst = new byte[src.Length + bytes.Length];
-
-            System.Buffer.BlockCopy(src, 0, dst, 0, src.Length);
-            System.Buffer.BlockCopy(bytes, 0, dst, src.Length, bytes.Length);
-
-            HashAlgorithm algorithm = HashAlgorithm.Create("SHA1");
-            byte[] inArray = algorithm.ComputeHash(dst);
-            return Convert.ToBase64String(inArray);
-        }
-
-        public Korisnici Update(int id, KorisniciUpdateRequest request)
-        {
-            var entity = Context.Korisniks.Find(id);
-            Mapper.Map(request, entity);
-
-            if (request.Lozinka != null)
+            if (!PasswordHasher.Verify(request.StaraLozinka, entity.LozinkaSalt, entity.LozinkaHash))
             {
-                if (request.Lozinka != request.LozinkaPotvrda)
-                {
-                    throw new Exception("Lozinke se ne poklapaju!");
-                }
-                else
-                {
-                    entity.LozinkaSalt = GenerateSalt();
-                    entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
-
-                }
+                throw new BusinessException("Trenutna lozinka nije ispravna.");
             }
 
+            PostaviNovuLozinku(entity, request.NovaLozinka);
+            await Context.SaveChangesAsync(cancellationToken);
+        }
 
-            Context.SaveChanges();
-            return Mapper.Map<Korisnici>(entity);
+        private async Task ProvjeriJedinstvenostAsync(string? korisnickoIme, string email, int? izuzmiKorisnikId, CancellationToken cancellationToken)
+        {
+            var postojeci = Context.Korisnici.Where(k => k.KorisnikId != izuzmiKorisnikId);
+
+            if (korisnickoIme != null && await postojeci.AnyAsync(k => k.KorisnickoIme == korisnickoIme, cancellationToken))
+            {
+                throw new BusinessException("Korisničko ime je već zauzeto. Odaberite drugo korisničko ime.");
+            }
+
+            if (await postojeci.AnyAsync(k => k.Email == email, cancellationToken))
+            {
+                throw new BusinessException("Email adresa je već registrovana.");
+            }
+        }
+
+        private async Task PostaviUlogeAsync(Korisnik entity, List<int> ulogeIds, CancellationToken cancellationToken)
+        {
+            var trazeneUloge = ulogeIds.Distinct().ToList();
+            var uloge = await Context.Uloge.Where(u => trazeneUloge.Contains(u.UlogaId)).ToListAsync(cancellationToken);
+
+            if (uloge.Count != trazeneUloge.Count)
+            {
+                throw new BusinessException("Odabrana uloga ne postoji.");
+            }
+
+            foreach (var postojeca in entity.KorisniciUloge.Where(ku => !trazeneUloge.Contains(ku.UlogaId)).ToList())
+            {
+                entity.KorisniciUloge.Remove(postojeca);
+                Context.KorisniciUloge.Remove(postojeca);
+            }
+
+            foreach (var uloga in uloge.Where(u => entity.KorisniciUloge.All(ku => ku.UlogaId != u.UlogaId)))
+            {
+                entity.KorisniciUloge.Add(new KorisnikUloga { Uloga = uloga, UlogaId = uloga.UlogaId });
+            }
+        }
+
+        private async Task PostaviPodatkeZaposlenjaAsync(Korisnik entity, int? gradRodjenjaId, int? specijalnostId, CancellationToken cancellationToken)
+        {
+            entity.GradRodjenja = gradRodjenjaId.HasValue
+                ? await Context.Gradovi.FirstOrDefaultAsync(x => x.GradId == gradRodjenjaId, cancellationToken)
+                    ?? throw new BusinessException("Odabrani grad rođenja ne postoji.")
+                : null;
+
+            entity.Specijalnost = specijalnostId.HasValue
+                ? await Context.Specijalnosti.FirstOrDefaultAsync(x => x.SpecijalnostId == specijalnostId, cancellationToken)
+                    ?? throw new BusinessException("Odabrana specijalnost ne postoji.")
+                : null;
+        }
+
+        private static void PostaviNovuLozinku(Korisnik entity, string lozinka)
+        {
+            entity.LozinkaSalt = PasswordHasher.GenerateSalt();
+            entity.LozinkaHash = PasswordHasher.Hash(lozinka, entity.LozinkaSalt);
+            entity.SecurityStamp ??= Guid.NewGuid().ToString();
         }
     }
 }
