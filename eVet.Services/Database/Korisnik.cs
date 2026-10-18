@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class Korisnik
+public partial class Korisnik : ISoftDelete, ISlikaEntity
 {
     public int KorisnikId { get; set; }
 
@@ -23,29 +20,48 @@ public partial class Korisnik
 
     public string LozinkaSalt { get; set; } = null!;
 
-    public bool? JeAktivan { get; set; }
+    public bool JeAktivan { get; set; } = true;
+
+    public string SecurityStamp { get; set; } = null!;
 
     public DateTime DatumRegistracije { get; set; }
+
+    // Podaci o zaposlenju popunjavaju se samo za veterinare.
+    public DateOnly? DatumRodjenja { get; set; }
+
+    public int? GradRodjenjaId { get; set; }
+
+    public DateOnly? DatumZaposlenja { get; set; }
+
+    public string? Zvanje { get; set; }
+
+    public int? SpecijalnostId { get; set; }
 
     public bool IsDeleted { get; set; }
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public virtual ICollection<AktiviranaPromocija> AktiviranaPromocijas { get; set; } = new List<AktiviranaPromocija>();
+    public virtual Grad? GradRodjenja { get; set; }
 
-    public virtual ICollection<KorisniciUloge> KorisniciUloges { get; set; } = new List<KorisniciUloge>();
+    public virtual Specijalnost? Specijalnost { get; set; }
 
-    public virtual ICollection<Ljubimac> Ljubimacs { get; set; } = new List<Ljubimac>();
+    public virtual ICollection<AktiviranaPromocija> AktiviranePromocije { get; set; } = new List<AktiviranaPromocija>();
 
-    public virtual ICollection<Obavijest> Obavijests { get; set; } = new List<Obavijest>();
+    public virtual ICollection<KorisnikUloga> KorisniciUloge { get; set; } = new List<KorisnikUloga>();
 
-    public virtual ICollection<RecenzijaOdgovor> RecenzijaOdgovors { get; set; } = new List<RecenzijaOdgovor>();
+    public virtual ICollection<Ljubimac> Ljubimci { get; set; } = new List<Ljubimac>();
 
-    public virtual ICollection<Recenzija> Recenzijas { get; set; } = new List<Recenzija>();
+    public virtual ICollection<Obavijest> Obavijesti { get; set; } = new List<Obavijest>();
 
-    public virtual ICollection<Terapija> Terapijas { get; set; } = new List<Terapija>();
+    public virtual ICollection<Obaveza> Obaveze { get; set; } = new List<Obaveza>();
 
-    public virtual ICollection<Termin> TerminKorisniks { get; set; } = new List<Termin>();
+    public virtual ICollection<RecenzijaOdgovor> RecenzijaOdgovori { get; set; } = new List<RecenzijaOdgovor>();
 
-    public virtual ICollection<Termin> TerminVeterinars { get; set; } = new List<Termin>();
+    public virtual ICollection<Recenzija> Recenzije { get; set; } = new List<Recenzija>();
+
+    public virtual ICollection<Terapija> Terapije { get; set; } = new List<Terapija>();
+
+    public virtual ICollection<Termin> TerminiKlijenta { get; set; } = new List<Termin>();
+
+    public virtual ICollection<Termin> TerminiVeterinara { get; set; } = new List<Termin>();
 }

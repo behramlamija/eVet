@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using eVet.Model.Enums;
 
 namespace eVet.Services.Database;
 
-public partial class Ljubimac
+public partial class Ljubimac : ISoftDelete, ISlikaEntity
 {
     public int LjubimacId { get; set; }
 
@@ -11,13 +10,11 @@ public partial class Ljubimac
 
     public string Ime { get; set; } = null!;
 
-    public string Vrsta { get; set; } = null!;
-
-    public string? Rasa { get; set; }
+    public int RasaId { get; set; }
 
     public DateOnly? DatumRodjenja { get; set; }
 
-    public string? Spol { get; set; }
+    public Spol Spol { get; set; }
 
     public decimal? Tezina { get; set; }
 
@@ -31,7 +28,9 @@ public partial class Ljubimac
 
     public virtual Korisnik Korisnik { get; set; } = null!;
 
-    public virtual ICollection<Terapija> Terapijas { get; set; } = new List<Terapija>();
+    public virtual Rasa Rasa { get; set; } = null!;
 
-    public virtual ICollection<Termin> Termins { get; set; } = new List<Termin>();
+    public virtual ICollection<Terapija> Terapije { get; set; } = new List<Terapija>();
+
+    public virtual ICollection<Termin> Termini { get; set; } = new List<Termin>();
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eVet.Model.SearchObjects
+﻿namespace eVet.Model.SearchObjects
 {
-    public class KorisniciSearchObject:BaseSearchObject
+    public class KorisniciSearchObject : BaseSearchObject
     {
         public string? ImeGTE { get; set; }
 
@@ -14,10 +10,10 @@ namespace eVet.Model.SearchObjects
 
         public string? Email { get; set; }
 
-        public bool? IsKorisniciUlogeIncluded { get; set; }
+        public int? UlogaId { get; set; }
 
-        public string? OrderBy { get; set; }
+        public bool? JeAktivan { get; set; }
 
-
+        public int? SpecijalnostId { get; set; }
     }
 }

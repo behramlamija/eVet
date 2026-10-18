@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class RecenzijaOdgovor
+public partial class RecenzijaOdgovor : ISoftDelete
 {
     public int RecenzijaOdgovorId { get; set; }
 
@@ -12,10 +9,6 @@ public partial class RecenzijaOdgovor
     public int KorisnikId { get; set; }
 
     public string Komentar { get; set; } = null!;
-
-    public int? BrojLajkova { get; set; }
-
-    public int? BrojDislajkova { get; set; }
 
     public DateTime DatumDodavanja { get; set; }
 

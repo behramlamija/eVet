@@ -1,4 +1,4 @@
-﻿namespace eVet.Model
+namespace eVet.Model
 {
     public class Korisnici
     {
@@ -14,37 +14,28 @@
 
         public string? Telefon { get; set; }
 
-        public byte[]? Slika { get; set; }
+        public bool ImaSliku { get; set; }
 
-        public bool? JeAktivan { get; set; }
+        public bool JeAktivan { get; set; }
 
         public DateTime DatumRegistracije { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public DateOnly? DatumRodjenja { get; set; }
 
-        public DateTime? VrijemeBrisanja { get; set; }
+        public int? GradRodjenjaId { get; set; }
 
-        public virtual ICollection<KorisniciUloge> KorisniciUloges { get; set; } = new List<KorisniciUloge>();
-        
-        
-        /*
-        public virtual ICollection<AktiviranaPromocija> AktiviranaPromocijas { get; set; } = new List<AktiviranaPromocija>();
+        public string? GradRodjenjaNaziv { get; set; }
 
-        public virtual ICollection<Ljubimac> Ljubimacs { get; set; } = new List<Ljubimac>();
+        public DateOnly? DatumZaposlenja { get; set; }
 
-        public virtual ICollection<Obavijest> Obavijests { get; set; } = new List<Obavijest>();
+        public int? GodineIskustva { get; set; }
 
-        public virtual ICollection<RecenzijaOdgovor> RecenzijaOdgovors { get; set; } = new List<RecenzijaOdgovor>();
+        public string? Zvanje { get; set; }
 
-        public virtual ICollection<Recenzija> Recenzijas { get; set; } = new List<Recenzija>();
+        public int? SpecijalnostId { get; set; }
 
-        public virtual ICollection<Terapija> Terapijas { get; set; } = new List<Terapija>();
+        public string? SpecijalnostNaziv { get; set; }
 
-        public virtual ICollection<Termin> TerminKorisniks { get; set; } = new List<Termin>();
-
-        public virtual ICollection<Termin> TerminVeterinars { get; set; } = new List<Termin>();*/
-
-
-
+        public List<Uloga> Uloge { get; set; } = new List<Uloga>();
     }
 }

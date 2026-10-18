@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class Recenzija
+public partial class Recenzija : ISoftDelete
 {
     public int RecenzijaId { get; set; }
 
     public int KorisnikId { get; set; }
 
-    public int UslugaId { get; set; }
+    public int TerminId { get; set; }
 
-    public string Komentar { get; set; } = null!;
+    public bool UslugaPozitivna { get; set; }
 
-    public int? BrojLajkova { get; set; }
+    public bool VeterinarPozitivan { get; set; }
 
-    public int? BrojDislajkova { get; set; }
+    public string? Komentar { get; set; }
 
     public DateTime DatumDodavanja { get; set; }
 
@@ -25,7 +22,7 @@ public partial class Recenzija
 
     public virtual Korisnik Korisnik { get; set; } = null!;
 
-    public virtual ICollection<RecenzijaOdgovor> RecenzijaOdgovors { get; set; } = new List<RecenzijaOdgovor>();
+    public virtual Termin Termin { get; set; } = null!;
 
-    public virtual Usluga Usluga { get; set; } = null!;
+    public virtual ICollection<RecenzijaOdgovor> RecenzijaOdgovori { get; set; } = new List<RecenzijaOdgovor>();
 }

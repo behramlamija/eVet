@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class Usluga
+public partial class Usluga : ISoftDelete, ISlikaEntity
 {
     public int UslugaId { get; set; }
 
@@ -25,11 +22,9 @@ public partial class Usluga
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public virtual ICollection<Promocija> Promocijas { get; set; } = new List<Promocija>();
+    public virtual ICollection<Promocija> Promocije { get; set; } = new List<Promocija>();
 
-    public virtual ICollection<Recenzija> Recenzijas { get; set; } = new List<Recenzija>();
-
-    public virtual ICollection<StavkeTermina> StavkeTerminas { get; set; } = new List<StavkeTermina>();
+    public virtual ICollection<StavkaTermina> StavkeTermina { get; set; } = new List<StavkaTermina>();
 
     public virtual VrstaUsluge Vrsta { get; set; } = null!;
 }

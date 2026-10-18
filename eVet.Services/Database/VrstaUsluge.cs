@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class VrstaUsluge
+public partial class VrstaUsluge : ISoftDelete, ISlikaEntity
 {
     public int VrstaId { get; set; }
 
     public string Naziv { get; set; } = null!;
+
+    public bool JeOperacija { get; set; }
+
+    public bool JeVakcinacija { get; set; }
 
     public byte[]? Slika { get; set; }
 
@@ -15,5 +16,5 @@ public partial class VrstaUsluge
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public virtual ICollection<Usluga> Uslugas { get; set; } = new List<Usluga>();
+    public virtual ICollection<Usluga> Usluge { get; set; } = new List<Usluga>();
 }

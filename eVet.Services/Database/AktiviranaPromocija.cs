@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace eVet.Services.Database;
 
-namespace eVet.Services.Database;
-
-public partial class AktiviranaPromocija
+public partial class AktiviranaPromocija : ISoftDelete
 {
     public int AktiviranaPromocijaId { get; set; }
 
     public int PromocijaId { get; set; }
 
     public int KorisnikId { get; set; }
-
-    public bool Aktivirana { get; set; }
 
     public bool Iskoristena { get; set; }
 
@@ -25,5 +20,5 @@ public partial class AktiviranaPromocija
 
     public virtual Promocija Promocija { get; set; } = null!;
 
-    public virtual ICollection<Termin> Termins { get; set; } = new List<Termin>();
+    public virtual ICollection<Termin> Termini { get; set; } = new List<Termin>();
 }

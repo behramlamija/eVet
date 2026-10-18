@@ -1,6 +1,40 @@
-@eVet.API_HostAddress = http://localhost:5103
+@host = http://localhost:5103
 
-GET {{eVet.API_HostAddress}}/weatherforecast/
-Accept: application/json
+### Prijava (vlasnik)
+# @name login
+POST {{host}}/Auth/login
+Content-Type: application/json
+
+{
+  "korisnickoIme": "desktop",
+  "lozinka": "test"
+}
 
 ###
+@token = {{login.response.body.$.token}}
+
+### Profil prijavljenog korisnika
+GET {{host}}/Profil
+Authorization: Bearer {{token}}
+
+### Lista veterinara (UlogaId = 2)
+GET {{host}}/Korisnici?UlogaId=2&Page=0&PageSize=10
+Authorization: Bearer {{token}}
+
+### Registracija klijenta
+POST {{host}}/Auth/registracija
+Content-Type: application/json
+
+{
+  "ime": "Test",
+  "prezime": "Klijent",
+  "korisnickoIme": "test.klijent",
+  "email": "test.klijent@example.com",
+  "telefon": "+387 61 123 456",
+  "lozinka": "Lozinka123",
+  "lozinkaPotvrda": "Lozinka123"
+}
+
+### Odjava (poništava token na serveru)
+POST {{host}}/Auth/logout
+Authorization: Bearer {{token}}

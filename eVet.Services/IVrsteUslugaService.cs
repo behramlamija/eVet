@@ -1,14 +1,10 @@
-﻿using eVet.Model;
+using eVet.Model;
+using eVet.Model.Requests;
 using eVet.Model.SearchObjects;
-using eVet.Services.Database;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace eVet.Services
 {
-    public interface IVrsteUslugaService:IService<Model.VrstaUsluge, VrstaUslugeSearchObject>
+    public interface IVrsteUslugaService : ICRUDService<VrstaUsluge, NazivSearchObject, VrstaUslugeUpsertRequest, VrstaUslugeUpsertRequest>
     {
-        
     }
 }

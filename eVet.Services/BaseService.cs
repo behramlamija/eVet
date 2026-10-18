@@ -1,64 +1,60 @@
 ﻿using eVet.Model;
+using eVet.Model.Exceptions;
 using eVet.Model.SearchObjects;
 using eVet.Services.Database;
+using Mapster;
 using MapsterMapper;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace eVet.Services
 {
-    public class BaseService<TModel,TSearch, TDbEntity>:IService<TModel, TSearch> where TSearch: BaseSearchObject where TDbEntity : class where TModel : class
+    public abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
-        public _210210Context Context { get; set; }
-        public IMapper Mapper { get; set; }
-        public BaseService(_210210Context context, IMapper mapper)
+        protected EVetDbContext Context { get; }
+        protected IMapper Mapper { get; }
+
+        protected BaseService(EVetDbContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
         }
 
-        public PagedResult<TModel> GetPaged(TSearch search)
+        protected virtual string NazivEntiteta => typeof(TDbEntity).Name;
+
+        public virtual async Task<PagedResult<TModel>> GetPagedAsync(TSearch search, CancellationToken cancellationToken = default)
         {
-            List<TModel> result = new List<TModel>();
+            var query = AddFilter(search, ApplyPristup(Context.Set<TDbEntity>().AsNoTracking()));
 
-            var query = Context.Set<TDbEntity>().AsQueryable();
-
-            query = AddFilter(search, query);
-
-            int count = query.Count();
-
-            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
-            {
-                query = query.Skip(search.Page.Value * search.PageSize.Value).Take(search.PageSize.Value);
-            }
-
-
-            var list = query.ToList();
-
-            result = Mapper.Map(list, result);
-
-            PagedResult<TModel> pagedResult = new PagedResult<TModel>();
-            pagedResult.ResultList = result;
-            pagedResult.Count = count;
-
-
-            return pagedResult;
+            // Projekcija se izvršava u SQL-u, pa se iz baze čitaju samo kolone potrebne za DTO (bez slika).
+            return await ApplyOrdering(query).ToPagedResultAsync<TDbEntity, TModel>(query, search, Mapper.Config, cancellationToken);
         }
 
-        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query)
+        public virtual async Task<TModel> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            return await ApplyPristup(Context.Set<TDbEntity>().AsNoTracking())
+                .Where(e => EF.Property<int>(e, KeyName) == id)
+                .ProjectToType<TModel>(Mapper.Config)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new NotFoundException($"{NazivEntiteta} sa traženim identifikatorom ne postoji.");
+        }
+
+        protected virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query)
         {
             return query;
         }
 
-        public TModel GetById(int id)
+        // Ograničava zapise na one kojima trenutni korisnik smije pristupiti (npr. klijent vidi samo svoje).
+        protected virtual IQueryable<TDbEntity> ApplyPristup(IQueryable<TDbEntity> query)
         {
-           var entity = Context.Set<TDbEntity>().Find(id);
-
-            if (entity != null)
-                return Mapper.Map<TModel>(entity);
-            else
-                return null;
+            return query;
         }
+
+        // Najnoviji zapisi se prikazuju prvi.
+        protected virtual IQueryable<TDbEntity> ApplyOrdering(IQueryable<TDbEntity> query)
+        {
+            return query.OrderByDescending(e => EF.Property<int>(e, KeyName));
+        }
+
+        protected string KeyName => Context.Model.FindEntityType(typeof(TDbEntity))!.FindPrimaryKey()!.Properties[0].Name;
     }
 }
