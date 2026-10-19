@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/korpa_provider.dart';
 import 'ljubimac_forma_screen.dart';
+import 'paypal_screen.dart';
 
 /// Zakazivanje termina za usluge iz korpe: ljubimac, veterinar, datum, slobodno vrijeme i način plaćanja.
 class ZakazivanjeScreen extends StatefulWidget {
@@ -86,7 +87,7 @@ class _ZakazivanjeScreenState extends State<ZakazivanjeScreen> {
       context,
       naslov: 'Potvrda zakazivanja',
       poruka: 'Zakazati termin za ${ljubimac.ime} kod Dr. ${veterinar.prezime}, ${formatDatum(_datum)} u ${formatVrijeme(_vrijeme!)}? '
-          'Konačnu cijenu obračunava stanica prema važećem cjeniku.',
+          '${_nacinPlacanjaId == NaciniPlacanja.payPal ? 'Nakon zakazivanja otvara se PayPal plaćanje.' : 'Plaćanje se vrši u stanici.'}',
       potvrda: 'Zakaži',
     );
     if (!potvrda || !mounted) return;
@@ -107,6 +108,13 @@ class _ZakazivanjeScreenState extends State<ZakazivanjeScreen> {
           ));
       if (!mounted) return;
       korpa.isprazni();
+      if (termin.nacinPlacanjaId == NaciniPlacanja.payPal) {
+        // Termin je kreiran; ako plaćanje ne uspije, može se platiti kasnije iz detalja termina.
+        await platiPayPalom(context, termin);
+        if (!mounted) return;
+        Navigator.of(context).popUntil((r) => r.isFirst);
+        return;
+      }
       Navigator.of(context).popUntil((r) => r.isFirst);
       prikaziUspjeh(context, 'Termin ${termin.sifra} je zaprimljen (${formatNovac(termin.ukupnaCijena)}) i čeka potvrdu veterinara.');
     } on ApiException catch (e) {
@@ -216,11 +224,10 @@ class _ZakazivanjeScreenState extends State<ZakazivanjeScreen> {
                       RadioListTile<int>(
                         contentPadding: EdgeInsets.zero,
                         value: n.nacinPlacanjaId,
-                        enabled: n.nacinPlacanjaId == NaciniPlacanja.gotovina,
                         title: Text(n.naziv),
                         subtitle: Text(n.nacinPlacanjaId == NaciniPlacanja.gotovina
                             ? 'Plaćanje u stanici nakon pružene usluge.'
-                            : 'Online plaćanje još nije dostupno u ovoj verziji aplikacije.'),
+                            : 'Online plaćanje odmah nakon zakazivanja. Ako termin bude otkazan ili odbijen, novac se automatski vraća.'),
                       ),
                   ],
                 ),

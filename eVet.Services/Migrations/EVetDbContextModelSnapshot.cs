@@ -2085,6 +2085,10 @@ namespace eVet.Services.Migrations
                     b.HasIndex(new[] { "PayPalOrderId" }, "UQ_Uplata_PayPalOrderId")
                         .IsUnique();
 
+                    b.HasIndex(new[] { "TerminId" }, "UQ_Uplata_Termin_Aktivna")
+                        .IsUnique()
+                        .HasFilter("[Status] IN (1, 2)");
+
                     b.ToTable("Uplata", (string)null);
                 });
 

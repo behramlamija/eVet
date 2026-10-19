@@ -48,6 +48,15 @@ API događaje (registracija, promjene termina, recenzije, zaboravljena lozinka) 
 Worker iz tog reda šalje e-mailove preko SMTP-a; neuspjelo slanje ponavlja 4 puta (1, 2, 4, 8 s), a zatim poruku prebacuje u red `evet.emailovi.neuspjeli`.
 U razvoju se kao SMTP server koristi Mailpit, pa se svi poslani e-mailovi (npr. kod za promjenu lozinke) vide na `http://localhost:8025`.
 
+### PayPal plaćanje (sandbox)
+
+Klijent u mobilnoj aplikaciji može platiti termin PayPalom (način plaćanja „PayPal” pri zakazivanju ili dugme „Plati PayPalom” u detaljima termina).
+
+- Plaćanje se odobrava u PayPal prozoru unutar aplikacije. Server zatim sam izvršava i provjerava naplatu (capture) i tek tada označava termin kao plaćen.
+- Iznos određuje server iz cijene termina. PayPal ne podržava KM, pa se naplaćuje u valuti `PayPal__Valuta` po kursu `PayPal__KursKonverzije` iz `.env`.
+- Kad se plaćeni termin otkaže ili odbije, stvarno naplaćeni iznos se automatski vraća (refund) na PayPal račun klijenta.
+- Za plaćanje se koristi sandbox **Personal** račun. Pristupni podaci tog računa dostavljaju se uz `.env` datoteku.
+
 ### Desktop aplikacija
 
 ```bash

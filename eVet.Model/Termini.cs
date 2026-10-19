@@ -46,6 +46,8 @@ namespace eVet.Model
 
         public bool JePlacen { get; set; }
 
+        public bool JeRefundiran { get; set; }
+
         public bool JePrevoz { get; set; }
 
         public string? AdresaPrevoza { get; set; }

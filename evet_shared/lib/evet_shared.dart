@@ -17,6 +17,7 @@ export 'src/providers/ljubimci_provider.dart';
 export 'src/providers/nacini_placanja_provider.dart';
 export 'src/providers/obaveze_provider.dart';
 export 'src/providers/obavijesti_provider.dart';
+export 'src/providers/placanja_provider.dart';
 export 'src/providers/preporuke_provider.dart';
 export 'src/providers/profil_provider.dart';
 export 'src/providers/promocije_provider.dart';

@@ -39,6 +39,7 @@ dependencies:
   provider: ^6.1.5+1
   evet_shared:
     path: ../evet_shared
+  webview_flutter: ^4.14.1
 
 dev_dependencies:
   flutter_test:

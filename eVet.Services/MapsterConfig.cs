@@ -37,6 +37,7 @@ namespace eVet.Services
 
             config.NewConfig<Termin, Model.Termini>()
                 .Map(dest => dest.JePlacen, src => src.Uplate.Any(u => u.Status == StatusUplate.Placeno))
+                .Map(dest => dest.JeRefundiran, src => src.Uplate.Any(u => u.Status == StatusUplate.Refundirano))
                 .Map(dest => dest.ImaRecenziju, src => src.Recenzija != null)
                 .Map(dest => dest.Stavke, src => src.StavkeTermina);
 

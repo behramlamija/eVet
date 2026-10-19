@@ -4,6 +4,7 @@ using eVet.Model.Exceptions;
 using eVet.Model.Requests;
 using eVet.Model.SearchObjects;
 using eVet.Services.Database;
+using eVet.Services.Placanja;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -19,13 +20,15 @@ namespace eVet.Services.Termini
 
         private readonly ICurrentUserService _currentUser;
         private readonly INotifikacijeService _notifikacije;
+        private readonly IPlacanjaService _placanja;
         private readonly TerminiSettings _settings;
         private readonly TimeZoneInfo _vremenskaZona;
 
-        public TerminiService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, INotifikacijeService notifikacije, IOptions<TerminiSettings> settings) : base(context, mapper)
+        public TerminiService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, INotifikacijeService notifikacije, IPlacanjaService placanja, IOptions<TerminiSettings> settings) : base(context, mapper)
         {
             _currentUser = currentUser;
             _notifikacije = notifikacije;
+            _placanja = placanja;
             _settings = settings.Value;
             _vremenskaZona = TimeZoneInfo.FindSystemTimeZoneById(_settings.VremenskaZona);
         }
@@ -195,7 +198,6 @@ namespace eVet.Services.Termini
         {
             return PromijeniStatusAsync(id, StatusTermina.Odbijen, request.Razlog, termin =>
             {
-                ProvjeriDaNijePlacen(termin, "odbiti");
                 VratiPromociju(termin);
 
                 _notifikacije.Dodaj(termin.Korisnik, "Termin je odbijen",
@@ -218,7 +220,6 @@ namespace eVet.Services.Termini
                     }
                 }
 
-                ProvjeriDaNijePlacen(termin, "otkazati");
                 VratiPromociju(termin);
 
                 if (otkazujeKlijent)
@@ -320,6 +321,11 @@ namespace eVet.Services.Termini
 
             TerminStateMachine.ProvjeriPrelaz(termin.Status, noviStatus);
             poslovnaPravila(termin);
+
+            if (noviStatus is StatusTermina.Otkazan or StatusTermina.Odbijen)
+            {
+                await _placanja.ObradiOtkazivanjeAsync(termin, cancellationToken);
+            }
 
             int korisnikId = _currentUser.KorisnikId;
             termin.Status = noviStatus;
@@ -433,14 +439,6 @@ namespace eVet.Services.Termini
             if (await preklapajuci.AnyAsync(x => x.LjubimacId == termin.Ljubimac.LjubimacId, cancellationToken))
             {
                 throw new BusinessException("Ljubimac već ima zakazan termin koji se preklapa s odabranim vremenom.");
-            }
-        }
-
-        private static void ProvjeriDaNijePlacen(Termin termin, string akcija)
-        {
-            if (termin.Uplate.Any(x => x.Status == StatusUplate.Placeno))
-            {
-                throw new BusinessException($"Plaćeni termin nije moguće {akcija} bez povrata novca. Pokrenite povrat (refund) uplate.");
             }
         }
 

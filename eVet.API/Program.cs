@@ -4,6 +4,7 @@ using eVet.Messaging;
 using eVet.Model.Responses;
 using eVet.Services;
 using eVet.Services.Database;
+using eVet.Services.Placanja;
 using eVet.Services.Slike;
 using eVet.Services.Security;
 using eVet.Services.Termini;
@@ -49,10 +50,17 @@ builder.Services.AddScoped<IStatistikaService, StatistikaService>();
 builder.Services.AddScoped<ISlikeService, SlikeService>();
 builder.Services.AddScoped<INotifikacijeService, NotifikacijeService>();
 builder.Services.AddScoped<IPreporukeService, PreporukeService>();
+builder.Services.AddScoped<IPlacanjaService, PlacanjaService>();
+builder.Services.AddHttpClient<IPayPalClient, PayPalClient>();
 builder.Services.AddSingleton<IPorukePublisher, RabbitMqPublisher>();
 
 builder.Services.AddOptions<RabbitMqSettings>()
     .BindConfiguration(RabbitMqSettings.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<PayPalSettings>()
+    .BindConfiguration(PayPalSettings.SectionName)
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
