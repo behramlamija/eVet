@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Linq.Expressions;
 
 namespace eVet.Services.Database;
@@ -512,9 +513,39 @@ public partial class EVetDbContext : DbContext
         });
 
         DodajSoftDeleteFiltere(modelBuilder);
+        OznaciUtcVremena(modelBuilder);
 
         SeedReferentnihPodataka(modelBuilder);
         SeedTestnihPodataka(modelBuilder);
+    }
+
+    // Vremena se čuvaju u UTC-u (DateTime.UtcNow); pri čitanju se označavaju kao UTC kako bi API vratio oznaku "Z"
+    // i klijent ih ispravno prikazao u lokalnoj zoni. Vrijeme obaveze je lokalno vrijeme koje bira veterinar.
+    private static void OznaciUtcVremena(ModelBuilder modelBuilder)
+    {
+        var utc = new ValueConverter<DateTime, DateTime>(
+            v => v.Kind == DateTimeKind.Local ? v.ToUniversalTime() : v,
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+        var utcNullable = new ValueConverter<DateTime?, DateTime?>(
+            v => v.HasValue && v.Value.Kind == DateTimeKind.Local ? v.Value.ToUniversalTime() : v,
+            v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+
+        foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties()))
+        {
+            if (property.DeclaringType.ClrType == typeof(Obaveza) && property.Name == nameof(Obaveza.DatumVrijeme))
+            {
+                continue;
+            }
+
+            if (property.ClrType == typeof(DateTime))
+            {
+                property.SetValueConverter(utc);
+            }
+            else if (property.ClrType == typeof(DateTime?))
+            {
+                property.SetValueConverter(utcNullable);
+            }
+        }
     }
 
     private static void DodajSoftDeleteFiltere(ModelBuilder modelBuilder)

@@ -1,11 +1,13 @@
+using eVet.Model.Requests;
 using eVet.Model.SearchObjects;
 using eVet.Services.Database;
 using MapsterMapper;
 
 namespace eVet.Services
 {
-    // Nazivi uloga se koriste u [Authorize(Roles = ...)], pa se uloge samo čitaju.
-    public class UlogeService : BaseService<Model.Uloga, NazivSearchObject, Uloga>, IUlogeService
+    // Nazivi uloga se koriste u [Authorize(Roles = ...)], pa se mijenja samo opis;
+    // dodavanje i brisanje uloga nisu dozvoljeni.
+    public class UlogeService : BaseCRUDService<Model.Uloga, NazivSearchObject, Uloga, UlogaUpdateRequest, UlogaUpdateRequest>, IUlogeService
     {
         public UlogeService(EVetDbContext context, IMapper mapper) : base(context, mapper)
         {

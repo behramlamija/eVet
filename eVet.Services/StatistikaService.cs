@@ -153,6 +153,8 @@ namespace eVet.Services
                     Ime = x.Ime,
                     Prezime = x.Prezime,
                     ImaSliku = x.Slika != null,
+                    SpecijalnostNaziv = x.Specijalnost != null ? x.Specijalnost.Naziv : null,
+                    JeAktivan = x.JeAktivan,
                     BrojTermina = x.TerminiVeterinara.Count(),
                     BrojZavrsenihTermina = x.TerminiVeterinara.Count(t => t.Status == StatusTermina.Zavrsen),
                     PozitivneRecenzije = x.TerminiVeterinara.Count(t => t.Recenzija != null && t.Recenzija.VeterinarPozitivan),

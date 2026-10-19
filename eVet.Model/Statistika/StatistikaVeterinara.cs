@@ -10,6 +10,10 @@ namespace eVet.Model.Statistika
 
         public bool ImaSliku { get; set; }
 
+        public string? SpecijalnostNaziv { get; set; }
+
+        public bool JeAktivan { get; set; }
+
         public int BrojTermina { get; set; }
 
         public int BrojZavrsenihTermina { get; set; }
