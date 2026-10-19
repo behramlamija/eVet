@@ -21,7 +21,8 @@ Sistem za veterinarsku stanicu: desktop aplikacija za vlasnika i veterinare, mob
 
 ### Backend
 
-1. Raspakovati `.env` datoteku u root folder repozitorija (konfiguracija se ne nalazi u kodu niti u `appsettings.json`).
+1. Raspakovati `.env-tajne.zip` (šifra je predana na DL) u root folder repozitorija, tako da `.env` bude pored `docker-compose.yml`.
+   Sva konfiguracija (konekcijski string, JWT, RabbitMQ, SMTP, PayPal) nalazi se samo u `.env` datoteci, a ne u kodu ili `appsettings.json`.
 2. Pokrenuti API:
 
    ```bash
@@ -55,16 +56,25 @@ Klijent u mobilnoj aplikaciji može platiti termin PayPalom (način plaćanja �
 - Plaćanje se odobrava u PayPal prozoru unutar aplikacije. Server zatim sam izvršava i provjerava naplatu (capture) i tek tada označava termin kao plaćen.
 - Iznos određuje server iz cijene termina. PayPal ne podržava KM, pa se naplaćuje u valuti `PayPal__Valuta` po kursu `PayPal__KursKonverzije` iz `.env`.
 - Kad se plaćeni termin otkaže ili odbije, stvarno naplaćeni iznos se automatski vraća (refund) na PayPal račun klijenta.
-- Za plaćanje se koristi sandbox **Personal** račun. Pristupni podaci tog računa dostavljaju se uz `.env` datoteku.
+- Za plaćanje se koristi sandbox **Personal** račun. Njegov e-mail i lozinka navedeni su na kraju `.env` datoteke.
 
-### Desktop aplikacija
+### Pokretanje iz release buildova
+
+U GitHub Release-u se nalazi arhiva `fit-build-<datum>.zip` sa gotovim aplikacijama. Prije njihovog pokretanja backend mora raditi (`docker compose up -d --build`).
+
+| Aplikacija | Putanja u arhivi | Pokretanje |
+|---|---|---|
+| Mobilna (Android) | `evet_mobile/build/app/outputs/flutter-apk/app-release.apk` | Obrisati staru verziju iz emulatora, prevući `.apk` u Android emulator (AVD) i pokrenuti aplikaciju **PetCity**. API adresa je `http://10.0.2.2:5103`. |
+| Desktop (Windows) | `evet_desktop/build/windows/x64/runner/Release/` | Pokrenuti `evet_desktop.exe`. API adresa je `http://localhost:5103`. |
+
+### Desktop aplikacija (iz izvornog koda)
 
 ```bash
 cd evet_desktop
 flutter run -d windows --dart-define=API_BASE_URL=http://localhost:5103
 ```
 
-### Mobilna aplikacija (Android emulator)
+### Mobilna aplikacija (iz izvornog koda, Android emulator)
 
 ```bash
 cd evet_mobile
@@ -80,3 +90,5 @@ Lozinka za sve testne korisnike je `test`.
 | Desktop verzija (vlasnik) | `desktop` | `test` |
 | Desktop verzija (veterinar) | `veterinar` | `test` |
 | Mobilna verzija (klijent) | `mobile` | `test` |
+
+Dodatni testni korisnici (lozinka `test`): veterinari `veterinar2` i `veterinar3`, klijent `klijent2`.
