@@ -4,6 +4,8 @@ import 'package:evet_shared/evet_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'usluga_detalji_screen.dart';
+
 /// Početni ekran: pozdrav, pretraga, kategorije usluga i najnovije usluge (mockup sa slike 8).
 class PocetnaScreen extends StatefulWidget {
   const PocetnaScreen({super.key});
@@ -123,6 +125,7 @@ class _PocetnaScreenState extends State<PocetnaScreen> {
                   for (final usluga in usluge)
                     Card(
                       child: ListTile(
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => UslugaDetaljiScreen(usluga: usluga))),
                         leading: EvetSlika(slike: slike, tip: TipSlike.usluga, id: usluga.uslugaId, imaSliku: usluga.imaSliku, zamjenskaIkona: Icons.medical_services_outlined),
                         title: Text(usluga.naziv, style: const TextStyle(fontWeight: FontWeight.w600)),
                         subtitle: Text(usluga.opis ?? usluga.vrstaNaziv, maxLines: 2, overflow: TextOverflow.ellipsis),

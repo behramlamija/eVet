@@ -32,6 +32,7 @@ namespace eVet.Services
                 .Map(dest => dest.JeZavrsena, src => src.TrajanjeDana != null && src.DatumTerapije.AddDays(src.TrajanjeDana.Value) < DateTime.UtcNow);
 
             config.NewConfig<AktiviranaPromocija, Model.AktiviranePromocije>()
+                .Map(dest => dest.UslugaId, src => src.Promocija.UslugaId)
                 .Map(dest => dest.UslugaNaziv, src => src.Promocija.Usluga.Naziv);
 
             config.NewConfig<Termin, Model.Termini>()

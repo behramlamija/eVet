@@ -40,3 +40,4 @@ export 'src/utils/validatori.dart';
 export 'src/widgets/dijalozi.dart';
 export 'src/widgets/paginacija.dart';
 export 'src/widgets/status_termina_chip.dart';
+export 'src/constants/nacini_placanja.dart';

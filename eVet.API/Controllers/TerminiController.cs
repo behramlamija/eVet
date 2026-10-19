@@ -54,6 +54,12 @@ namespace eVet.API.Controllers
             return _terminiService.ZavrsiAsync(id, cancellationToken);
         }
 
+        [HttpGet("konfiguracija")]
+        public TerminiKonfiguracija GetKonfiguracija()
+        {
+            return _terminiService.GetKonfiguracija();
+        }
+
         [HttpGet("slobodna-vremena")]
         public Task<List<TimeOnly>> GetSlobodnaVremena([FromQuery] int veterinarId, [FromQuery] DateOnly datum, [FromQuery] int trajanje, CancellationToken cancellationToken)
         {

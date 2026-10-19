@@ -1,5 +1,6 @@
 import 'package:evet_shared/evet_shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'layouts/master_screen.dart';
@@ -51,6 +52,9 @@ class EvetDesktopApp extends StatelessWidget {
       title: 'PetCity',
       debugShowCheckedModeBanner: false,
       theme: EvetTheme.svijetla,
+      locale: const Locale('bs'),
+      supportedLocales: const [Locale('bs')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: Consumer<AuthProvider>(
         builder: (context, auth, _) => auth.jePrijavljen ? const MasterScreen() : const LoginScreen(),
       ),

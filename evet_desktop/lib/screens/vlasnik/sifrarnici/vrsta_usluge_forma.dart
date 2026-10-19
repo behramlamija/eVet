@@ -71,6 +71,7 @@ class _VrstaUslugeFormaState extends State<_VrstaUslugeForma> {
       sirina: 480,
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

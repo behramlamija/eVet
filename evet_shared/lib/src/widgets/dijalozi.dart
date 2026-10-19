@@ -63,6 +63,7 @@ class _RazlogDijalogState extends State<_RazlogDijalog> {
         width: 420,
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: TextFormField(
             controller: _razlog,
             autofocus: true,

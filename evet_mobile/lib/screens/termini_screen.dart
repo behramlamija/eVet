@@ -2,6 +2,8 @@ import 'package:evet_shared/evet_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'termin_detalji_screen.dart';
+
 /// Historija termina klijenta; najnoviji termini su na vrhu.
 class TerminiScreen extends StatefulWidget {
   const TerminiScreen({super.key});
@@ -13,13 +15,27 @@ class TerminiScreen extends StatefulWidget {
 class _TerminiScreenState extends State<TerminiScreen> {
   late Future<PagedResult<Termini>> _termini;
 
+  late final TerminiProvider _provider = context.read<TerminiProvider>();
+
   @override
   void initState() {
     super.initState();
     _ucitaj();
+    // Novi ili otkazani termin se odmah prikazuje, bez ručnog osvježavanja.
+    _provider.addListener(_osvjezi);
   }
 
-  void _ucitaj() => _termini = context.read<TerminiProvider>().get();
+  @override
+  void dispose() {
+    _provider.removeListener(_osvjezi);
+    super.dispose();
+  }
+
+  void _osvjezi() {
+    if (mounted) setState(_ucitaj);
+  }
+
+  void _ucitaj() => _termini = _provider.get();
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +63,14 @@ class _TerminiScreenState extends State<TerminiScreen> {
               for (final t in termini)
                 Card(
                   child: ListTile(
+                    onTap: () async {
+                      final promjena = await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => TerminDetaljiScreen(terminId: t.terminId)));
+                      if (promjena == true) setState(_ucitaj);
+                    },
                     title: Text(t.stavke.map((s) => s.uslugaNaziv).join(', ')),
                     subtitle: Text('${formatDatum(t.datumTermina)} u ${formatVrijeme(t.vrijemePocetka)} • ${t.ljubimacIme}\n${formatNovac(t.ukupnaCijena)}'),
                     isThreeLine: true,
-                    trailing: Chip(label: Text(nazivStatusa(t.status))),
+                    trailing: StatusTerminaChip(t.status),
                   ),
                 ),
             ],

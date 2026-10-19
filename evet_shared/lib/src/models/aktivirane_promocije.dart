@@ -10,6 +10,7 @@ class AktiviranePromocije {
   final String promocijaKod;
   final double promocijaPopust;
   final DateTime promocijaDatumKraja;
+  final int uslugaId;
   final String uslugaNaziv;
   final bool iskoristena;
   final DateTime datumAktiviranja;
@@ -21,6 +22,7 @@ class AktiviranePromocije {
     required this.promocijaKod,
     required this.promocijaPopust,
     required this.promocijaDatumKraja,
+    required this.uslugaId,
     required this.uslugaNaziv,
     this.iskoristena = false,
     required this.datumAktiviranja,

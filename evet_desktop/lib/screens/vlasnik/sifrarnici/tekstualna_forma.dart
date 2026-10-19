@@ -83,6 +83,7 @@ class _TekstualnaFormaState extends State<_TekstualnaForma> {
       sirina: 460,
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

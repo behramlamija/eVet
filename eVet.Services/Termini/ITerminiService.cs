@@ -15,6 +15,8 @@ namespace eVet.Services.Termini
 
         Task<Model.Termini> ZavrsiAsync(int id, CancellationToken cancellationToken = default);
 
+        Model.TerminiKonfiguracija GetKonfiguracija();
+
         Task<List<TimeOnly>> GetSlobodnaVremenaAsync(int veterinarId, DateOnly datum, int trajanje, CancellationToken cancellationToken = default);
     }
 }

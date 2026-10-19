@@ -1,8 +1,10 @@
 import 'package:evet_shared/evet_shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'layouts/master_screen.dart';
+import 'providers/korpa_provider.dart';
 import 'screens/login_screen.dart';
 
 /// Adresa API-ja: flutter run --dart-define=API_BASE_URL=http://10.0.2.2:5103
@@ -17,6 +19,8 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider(api, dozvoljeneUloge: const [Uloge.klijent])),
         ChangeNotifierProvider(create: (_) => ObavijestiProvider(api)),
+        ChangeNotifierProvider(create: (_) => KorpaProvider()),
+        ChangeNotifierProvider(create: (_) => VrsteLjubimacaProvider(api)),
         ChangeNotifierProvider(create: (_) => UslugeProvider(api)),
         ChangeNotifierProvider(create: (_) => VrsteUslugaProvider(api)),
         ChangeNotifierProvider(create: (_) => TerminiProvider(api)),
@@ -44,6 +48,9 @@ class EvetMobileApp extends StatelessWidget {
       title: 'PetCity',
       debugShowCheckedModeBanner: false,
       theme: EvetTheme.svijetla,
+      locale: const Locale('bs'),
+      supportedLocales: const [Locale('bs')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: Consumer<AuthProvider>(
         builder: (context, auth, _) => auth.jePrijavljen ? const MasterScreen() : const LoginScreen(),
       ),
