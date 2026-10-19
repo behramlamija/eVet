@@ -31,6 +31,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => NaciniPlacanjaProvider(api)),
         ChangeNotifierProvider(create: (_) => GradoviProvider(api)),
         ChangeNotifierProvider(create: (_) => RaseProvider(api)),
+        Provider(create: (_) => PreporukeProvider(api)),
         Provider(create: (_) => ProfilProvider(api)),
         Provider(create: (_) => SlikeProvider(api)),
       ],

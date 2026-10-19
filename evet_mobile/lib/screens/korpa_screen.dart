@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/korpa_provider.dart';
+import '../widgets/preporuke_sekcija.dart';
 import 'zakazivanje_screen.dart';
 
 /// Korpa za rezervaciju (mockup sa slike 9): usluge, kupon, prevoz i ukupni troškovi.
@@ -126,6 +127,8 @@ class _KorpaScreenState extends State<KorpaScreen> {
                     ),
                   ),
                 ),
+              const SizedBox(height: 16),
+              PreporukeSekcija(uslugeIds: [for (final u in korpa.stavke) u.uslugaId], sakrijAkoPrazno: true),
               const SizedBox(height: 12),
               FilledButton.icon(
                 style: FilledButton.styleFrom(backgroundColor: EvetBoje.crvena),

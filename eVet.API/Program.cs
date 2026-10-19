@@ -48,6 +48,7 @@ builder.Services.AddScoped<IObavijestiService, ObavijestiService>();
 builder.Services.AddScoped<IStatistikaService, StatistikaService>();
 builder.Services.AddScoped<ISlikeService, SlikeService>();
 builder.Services.AddScoped<INotifikacijeService, NotifikacijeService>();
+builder.Services.AddScoped<IPreporukeService, PreporukeService>();
 builder.Services.AddSingleton<IPorukePublisher, RabbitMqPublisher>();
 
 builder.Services.AddOptions<RabbitMqSettings>()

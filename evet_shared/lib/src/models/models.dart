@@ -10,6 +10,7 @@ export 'login_response.dart';
 export 'nacin_placanja.dart';
 export 'obaveze.dart';
 export 'obavijesti.dart';
+export 'preporuke_usluga.dart';
 export 'promocije.dart';
 export 'rasa.dart';
 export 'recenzija_odgovori.dart';
