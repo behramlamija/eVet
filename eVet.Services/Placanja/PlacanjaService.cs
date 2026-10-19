@@ -70,9 +70,8 @@ namespace eVet.Services.Placanja
                     throw new BusinessException("Plaćanje je već odobreno u PayPalu i čeka potvrdu. Osvježite termin.");
                 }
 
-                // Order je istekao ili poništen u PayPalu; zatvara se prije otvaranja novog.
+                // Order je istekao ili poništen u PayPalu; zatvara se pri otvaranju novog (ispod, u istoj transakciji).
                 otvorena.Status = StatusUplate.Neuspjesno;
-                await _context.SaveChangesAsync(cancellationToken);
             }
 
             var iznos = Math.Round(termin.UkupnaCijena * _settings.KursKonverzije, 2, MidpointRounding.AwayFromZero);
@@ -96,11 +95,19 @@ namespace eVet.Services.Placanja
                 PayPalOrderId = order.Id,
                 DatumKreiranja = DateTime.UtcNow
             };
-            _context.Uplate.Add(uplata);
-
             try
             {
-                await _context.SaveChangesAsync(cancellationToken);
+                // Stara uplata se mora zatvoriti prije upisa nove zbog jedinstvenog indeksa aktivne uplate,
+                // pa se oba snimanja izvršavaju u jednoj transakciji.
+                var strategy = _context.Database.CreateExecutionStrategy();
+                await strategy.ExecuteAsync(async () =>
+                {
+                    await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+                    await _context.SaveChangesAsync(cancellationToken);
+                    _context.Uplate.Add(uplata);
+                    await _context.SaveChangesAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                });
             }
             catch (DbUpdateException)
             {
@@ -139,21 +146,36 @@ namespace eVet.Services.Placanja
             }
 
             // Uslovni update: ako je paralelni zahtjev već potvrdio uplatu, efekti se ne ponavljaju.
+            // Promjena statusa uplate i obavijest snimaju se u jednoj transakciji.
             var sada = DateTime.UtcNow;
-            int azurirano = await _context.Uplate
-                .Where(x => x.UplataId == uplata.UplataId && x.Status == StatusUplate.NaCekanju)
-                .ExecuteUpdateAsync(s => s
-                    .SetProperty(x => x.Status, StatusUplate.Placeno)
-                    .SetProperty(x => x.PayPalCaptureId, capture.Id)
-                    .SetProperty(x => x.Iznos, capture.Iznos)
-                    .SetProperty(x => x.Valuta, capture.Valuta)
-                    .SetProperty(x => x.DatumPlacanja, sada), cancellationToken);
-
-            if (azurirano == 1)
+            bool potvrdjenoSada = false;
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
             {
-                _notifikacije.Dodaj(uplata.Termin.Korisnik, "Termin je plaćen",
-                    $"Uplata za termin {uplata.Termin.Sifra} u iznosu od {capture.Iznos:0.00} {capture.Valuta} je uspješno izvršena putem PayPala.");
-                await _context.SaveChangesAsync(cancellationToken);
+                await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+                int azurirano = await _context.Uplate
+                    .Where(x => x.UplataId == uplata.UplataId && x.Status == StatusUplate.NaCekanju)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(x => x.Status, StatusUplate.Placeno)
+                        .SetProperty(x => x.PayPalCaptureId, capture.Id)
+                        .SetProperty(x => x.Iznos, capture.Iznos)
+                        .SetProperty(x => x.Valuta, capture.Valuta)
+                        .SetProperty(x => x.DatumPlacanja, sada), cancellationToken);
+
+                potvrdjenoSada = azurirano == 1;
+                if (potvrdjenoSada)
+                {
+                    _notifikacije.Dodaj(uplata.Termin.Korisnik, "Termin je plaćen",
+                        $"Uplata za termin {uplata.Termin.Sifra} u iznosu od {capture.Iznos:0.00} {capture.Valuta} je uspješno izvršena putem PayPala.");
+                    await _context.SaveChangesAsync(cancellationToken);
+                }
+
+                await transaction.CommitAsync(cancellationToken);
+            });
+
+            if (potvrdjenoSada)
+            {
                 await _notifikacije.PosaljiEmailoveAsync(cancellationToken);
             }
 

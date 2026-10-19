@@ -36,11 +36,13 @@ class _PromocijeTabState extends State<PromocijeTab> {
     super.dispose();
   }
 
-  void _ucitaj() => _promocije = context.read<PromocijeProvider>().get(
-        page: _stranica,
-        pageSize: _velicinaStranice,
-        filter: {'FTS': _pretraga.text.trim(), 'SamoVazece': _samoVazece ? true : null},
-      );
+  void _ucitaj() {
+    _promocije = context.read<PromocijeProvider>().get(
+          page: _stranica,
+          pageSize: _velicinaStranice,
+          filter: {'FTS': _pretraga.text.trim(), 'SamoVazece': _samoVazece ? true : null},
+        );
+  }
 
   void _osvjezi({bool naPocetak = false}) => setState(() {
         if (naPocetak) _stranica = 0;

@@ -35,7 +35,9 @@ class _TerminiScreenState extends State<TerminiScreen> {
     if (mounted) setState(_ucitaj);
   }
 
-  void _ucitaj() => _termini = _provider.get();
+  void _ucitaj() {
+    _termini = _provider.get();
+  }
 
   @override
   Widget build(BuildContext context) {

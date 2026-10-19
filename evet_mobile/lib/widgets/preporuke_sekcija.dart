@@ -36,7 +36,9 @@ class _PreporukeSekcijaState extends State<PreporukeSekcija> {
 
   bool _isteUsluge(List<int> a, List<int> b) => a.length == b.length && a.toSet().containsAll(b);
 
-  void _ucitaj() => _preporuke = context.read<PreporukeProvider>().zaUsluge(widget.uslugeIds);
+  void _ucitaj() {
+    _preporuke = context.read<PreporukeProvider>().zaUsluge(widget.uslugeIds);
+  }
 
   @override
   Widget build(BuildContext context) {

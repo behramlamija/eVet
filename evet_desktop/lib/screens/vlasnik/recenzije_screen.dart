@@ -26,11 +26,13 @@ class _RecenzijeScreenState extends State<RecenzijeScreen> {
     _ucitaj();
   }
 
-  void _ucitaj() => _recenzije = context.read<RecenzijeProvider>().get(
-        page: _stranica,
-        pageSize: _velicinaStranice,
-        filter: {'VeterinarId': _veterinarId, 'VeterinarPozitivan': _pozitivna},
-      );
+  void _ucitaj() {
+    _recenzije = context.read<RecenzijeProvider>().get(
+          page: _stranica,
+          pageSize: _velicinaStranice,
+          filter: {'VeterinarId': _veterinarId, 'VeterinarPozitivan': _pozitivna},
+        );
+  }
 
   void _osvjezi({bool naPocetak = false}) => setState(() {
         if (naPocetak) _stranica = 0;

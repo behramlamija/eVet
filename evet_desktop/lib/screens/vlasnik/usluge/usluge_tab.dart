@@ -39,11 +39,13 @@ class _UslugeTabState extends State<UslugeTab> {
     super.dispose();
   }
 
-  void _ucitaj() => _usluge = context.read<UslugeProvider>().get(
-        page: _stranica,
-        pageSize: _velicinaStranice,
-        filter: {'FTS': _pretraga.text.trim(), 'VrstaId': _vrstaId},
-      );
+  void _ucitaj() {
+    _usluge = context.read<UslugeProvider>().get(
+          page: _stranica,
+          pageSize: _velicinaStranice,
+          filter: {'FTS': _pretraga.text.trim(), 'VrstaId': _vrstaId},
+        );
+  }
 
   void _osvjezi({bool naPocetak = false}) => setState(() {
         if (naPocetak) _stranica = 0;

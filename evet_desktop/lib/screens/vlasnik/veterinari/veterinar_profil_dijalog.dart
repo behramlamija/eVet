@@ -28,7 +28,9 @@ class _ProfilVeterinaraState extends State<_ProfilVeterinara> {
     _ucitaj();
   }
 
-  void _ucitaj() => _veterinar = context.read<KorisniciProvider>().getById(widget.korisnikId);
+  void _ucitaj() {
+    _veterinar = context.read<KorisniciProvider>().getById(widget.korisnikId);
+  }
 
   Future<void> _uredi(Korisnici v) async {
     if (await otvoriFormuVeterinara(context, veterinar: v)) {

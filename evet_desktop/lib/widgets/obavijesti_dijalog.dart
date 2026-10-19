@@ -26,7 +26,9 @@ class _ObavijestiDijalogState extends State<_ObavijestiDijalog> {
     _ucitaj();
   }
 
-  void _ucitaj() => _obavijesti = context.read<ObavijestiProvider>().get(page: _stranica, pageSize: _velicinaStranice);
+  void _ucitaj() {
+    _obavijesti = context.read<ObavijestiProvider>().get(page: _stranica, pageSize: _velicinaStranice);
+  }
 
   Future<void> _oznaci(Obavijesti o) async {
     if (o.jePogledana) return;

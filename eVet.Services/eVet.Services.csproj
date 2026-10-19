@@ -26,4 +26,8 @@
     <ProjectReference Include="..\eVet.Messaging\eVet.Messaging.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Database\SeedSlike\*.jpg" />
+  </ItemGroup>
+
 </Project>
