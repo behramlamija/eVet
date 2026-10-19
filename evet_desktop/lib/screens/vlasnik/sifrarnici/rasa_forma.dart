@@ -74,6 +74,7 @@ class _RasaFormaState extends State<_RasaForma> {
       sirina: 460,
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

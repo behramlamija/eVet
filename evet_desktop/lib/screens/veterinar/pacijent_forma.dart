@@ -115,6 +115,7 @@ class _PacijentFormaState extends State<_PacijentForma> {
       naslov: _uredjivanje ? 'Uređivanje pacijenta' : 'Novi pacijent',
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

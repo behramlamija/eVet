@@ -122,6 +122,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   padding: const EdgeInsets.all(24),
                   child: Form(
                     key: _podaciKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -162,6 +163,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   padding: const EdgeInsets.all(24),
                   child: Form(
                     key: _lozinkaKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [

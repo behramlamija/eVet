@@ -124,6 +124,7 @@ class _PromocijaFormaState extends State<_PromocijaForma> {
       naslov: _uredjivanje ? 'Uređivanje promocije' : 'Nova promocija',
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

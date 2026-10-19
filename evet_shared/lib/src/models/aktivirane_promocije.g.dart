@@ -16,6 +16,7 @@ AktiviranePromocije _$AktiviranePromocijeFromJson(Map<String, dynamic> json) =>
       promocijaDatumKraja: DateTime.parse(
         json['promocijaDatumKraja'] as String,
       ),
+      uslugaId: (json['uslugaId'] as num).toInt(),
       uslugaNaziv: json['uslugaNaziv'] as String,
       iskoristena: json['iskoristena'] as bool? ?? false,
       datumAktiviranja: DateTime.parse(json['datumAktiviranja'] as String),
@@ -30,6 +31,7 @@ Map<String, dynamic> _$AktiviranePromocijeToJson(
   'promocijaKod': instance.promocijaKod,
   'promocijaPopust': instance.promocijaPopust,
   'promocijaDatumKraja': instance.promocijaDatumKraja.toIso8601String(),
+  'uslugaId': instance.uslugaId,
   'uslugaNaziv': instance.uslugaNaziv,
   'iskoristena': instance.iskoristena,
   'datumAktiviranja': instance.datumAktiviranja.toIso8601String(),

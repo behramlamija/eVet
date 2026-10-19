@@ -14,6 +14,8 @@ namespace eVet.Model
 
         public DateTime PromocijaDatumKraja { get; set; }
 
+        public int UslugaId { get; set; }
+
         public string UslugaNaziv { get; set; } = null!;
 
         public bool Iskoristena { get; set; }

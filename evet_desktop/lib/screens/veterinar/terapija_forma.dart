@@ -84,6 +84,7 @@ class _TerapijaFormaState extends State<_TerapijaForma> {
       naslov: _uredjivanje ? 'Izmjena terapije - ${widget.ljubimacIme}' : 'Nova terapija - ${widget.ljubimacIme}',
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

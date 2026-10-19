@@ -244,6 +244,18 @@ namespace eVet.Services.Termini
             }, cancellationToken);
         }
 
+        public Model.TerminiKonfiguracija GetKonfiguracija()
+        {
+            return new Model.TerminiKonfiguracija
+            {
+                CijenaPrevoza = _settings.CijenaPrevoza,
+                MinimalnoSatiZaOtkazivanje = _settings.MinimalnoSatiZaOtkazivanje,
+                MaksimalnoDanaUnaprijed = _settings.MaksimalnoDanaUnaprijed,
+                RadnoVrijemeOdSat = _settings.RadnoVrijemeOdSat,
+                RadnoVrijemeDoSat = _settings.RadnoVrijemeDoSat
+            };
+        }
+
         public async Task<List<TimeOnly>> GetSlobodnaVremenaAsync(int veterinarId, DateOnly datum, int trajanje, CancellationToken cancellationToken = default)
         {
             if (trajanje <= 0)

@@ -20,6 +20,10 @@ class TerminiProvider extends BaseProvider<Termini> {
 
   Future<Termini> otkazi(int id, String razlog) => _akcija(id, 'otkazi', PromjenaStatusaRequest(razlog: razlog));
 
+  /// Pravila zakazivanja sa servera (cijena prevoza, rok za otkazivanje, radno vrijeme).
+  Future<TerminiKonfiguracija> konfiguracija() async =>
+      TerminiKonfiguracija.fromJson(await api.get('$endpoint/konfiguracija') as Map<String, dynamic>);
+
   /// Slobodna vremena početka ("HH:mm:ss") za veterinara, dan i ukupno trajanje usluga u minutama.
   Future<List<String>> slobodnaVremena({required int veterinarId, required DateTime datum, required int trajanje}) async {
     final json = await api.get('$endpoint/slobodna-vremena', query: {

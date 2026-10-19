@@ -97,6 +97,7 @@ class _UslugaFormaState extends State<_UslugaForma> {
       naslov: _uredjivanje ? 'Uređivanje usluge' : 'Nova usluga',
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

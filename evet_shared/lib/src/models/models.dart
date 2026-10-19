@@ -44,6 +44,7 @@ export 'status_uplate.dart';
 export 'stavke_termina.dart';
 export 'terapije.dart';
 export 'termini.dart';
+export 'termini_konfiguracija.dart';
 export 'tip_slike.dart';
 export 'uloga.dart';
 export 'usluge.dart';
