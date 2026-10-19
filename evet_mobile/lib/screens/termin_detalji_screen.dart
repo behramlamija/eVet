@@ -49,6 +49,13 @@ class _TerminDetaljiScreenState extends State<TerminDetaljiScreen> {
   }
 
   Future<void> _plati(Termini t) async {
+    final potvrda = await potvrdiAkciju(
+      context,
+      naslov: 'Plaćanje termina',
+      poruka: 'Platiti termin ${t.sifra} u iznosu od ${formatNovac(t.ukupnaCijena)} putem PayPala?',
+      potvrda: 'Plati',
+    );
+    if (!potvrda || !mounted) return;
     final placen = await platiPayPalom(context, t);
     if (placen != null && mounted) {
       setState(() {

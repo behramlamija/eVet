@@ -27,7 +27,9 @@ class _ObavezePanelState extends State<ObavezePanel> {
     if (oldWidget.datum != widget.datum) _ucitaj();
   }
 
-  void _ucitaj() => _obaveze = context.read<ObavezeProvider>().get(filter: {'Datum': widget.datum}, pageSize: BaseProvider.maxPageSize);
+  void _ucitaj() {
+    _obaveze = context.read<ObavezeProvider>().get(filter: {'Datum': widget.datum}, pageSize: BaseProvider.maxPageSize);
+  }
 
   Future<void> _promijeniStatus(Obaveze o, bool zavrsena) async {
     final ok = await izvrsiAkciju(

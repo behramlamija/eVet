@@ -71,7 +71,9 @@ class _SifrarnikPrikazState<T> extends State<SifrarnikPrikaz<T>> {
     super.dispose();
   }
 
-  void _ucitaj() => _zapisi = _k.provider.get(page: _stranica, pageSize: _velicinaStranice, filter: {'Naziv': _pretraga.text.trim()});
+  void _ucitaj() {
+    _zapisi = _k.provider.get(page: _stranica, pageSize: _velicinaStranice, filter: {'Naziv': _pretraga.text.trim()});
+  }
 
   void _osvjezi({bool naPocetak = false}) => setState(() {
         if (naPocetak) _stranica = 0;

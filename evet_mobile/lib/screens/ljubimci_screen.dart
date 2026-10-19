@@ -21,7 +21,9 @@ class _LjubimciScreenState extends State<LjubimciScreen> {
     _ucitaj();
   }
 
-  void _ucitaj() => _ljubimci = context.read<LjubimciProvider>().get(pageSize: BaseProvider.maxPageSize);
+  void _ucitaj() {
+    _ljubimci = context.read<LjubimciProvider>().get(pageSize: BaseProvider.maxPageSize);
+  }
 
   Future<void> _otvori([Ljubimci? ljubimac]) async {
     final promjena = await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => LjubimacFormaScreen(ljubimac: ljubimac)));

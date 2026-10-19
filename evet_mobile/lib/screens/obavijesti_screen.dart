@@ -14,7 +14,9 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
   late Future<PagedResult<Obavijesti>> _obavijesti;
   int? _zadnjiBroj;
 
-  void _ucitaj() => _obavijesti = context.read<ObavijestiProvider>().get();
+  void _ucitaj() {
+    _obavijesti = context.read<ObavijestiProvider>().get();
+  }
 
   Future<void> _oznaci(Obavijesti obavijest) async {
     if (obavijest.jePogledana) return;

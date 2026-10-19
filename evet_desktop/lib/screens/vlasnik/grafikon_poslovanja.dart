@@ -26,10 +26,12 @@ class _GrafikonPoslovanjaState extends State<GrafikonPoslovanja> {
     _ucitaj();
   }
 
-  void _ucitaj() => _podaci = context.read<StatistikaProvider>().poPeriodima(
-        _grupisanje,
-        godina: _grupisanje == GrupisanjeStatistike.mjesec ? _godina : null,
-      );
+  void _ucitaj() {
+    _podaci = context.read<StatistikaProvider>().poPeriodima(
+          _grupisanje,
+          godina: _grupisanje == GrupisanjeStatistike.mjesec ? _godina : null,
+        );
+  }
 
   String _oznaka(StatistikaPeriod p) => p.mjesec == null ? '${p.godina}' : _mjeseci[p.mjesec! - 1];
 

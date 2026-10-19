@@ -36,7 +36,9 @@ class _VeterinariScreenState extends State<VeterinariScreen> {
     super.dispose();
   }
 
-  void _ucitaj() => _veterinari = context.read<StatistikaProvider>().veterinari(fts: _pretraga.text.trim(), page: _stranica, pageSize: _velicinaStranice);
+  void _ucitaj() {
+    _veterinari = context.read<StatistikaProvider>().veterinari(fts: _pretraga.text.trim(), page: _stranica, pageSize: _velicinaStranice);
+  }
 
   void _osvjezi({bool naPocetak = false}) => setState(() {
         if (naPocetak) _stranica = 0;
