@@ -35,6 +35,8 @@ public partial class EVetDbContext : DbContext
 
     public virtual DbSet<RecenzijaOdgovor> RecenzijaOdgovori { get; set; }
 
+    public virtual DbSet<ResetLozinke> ResetiLozinki { get; set; }
+
     public virtual DbSet<Specijalnost> Specijalnosti { get; set; }
 
     public virtual DbSet<StavkaTermina> StavkeTermina { get; set; }
@@ -304,6 +306,25 @@ public partial class EVetDbContext : DbContext
                 .HasForeignKey(d => d.RecenzijaId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_RecOdg_Recenzija");
+        });
+
+        modelBuilder.Entity<ResetLozinke>(entity =>
+        {
+            entity.ToTable("ResetLozinke");
+
+            entity.HasIndex(e => new { e.KorisnikId, e.JeIskoristen }, "IX_ResetLozinke_Korisnik");
+
+            entity.Property(e => e.DatumIsteka).HasColumnType("datetime");
+            entity.Property(e => e.DatumKreiranja)
+                .HasDefaultValueSql("(getutcdate())", "DF_ResetLozinke_DatumKreiranja")
+                .HasColumnType("datetime");
+            entity.Property(e => e.KodHash).HasMaxLength(255);
+            entity.Property(e => e.KodSalt).HasMaxLength(255);
+
+            entity.HasOne(d => d.Korisnik).WithMany()
+                .HasForeignKey(d => d.KorisnikId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ResetLozinke_Korisnik");
         });
 
         modelBuilder.Entity<Specijalnost>(entity =>

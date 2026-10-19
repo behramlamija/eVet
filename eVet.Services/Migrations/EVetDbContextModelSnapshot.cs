@@ -951,6 +951,48 @@ namespace eVet.Services.Migrations
                     b.ToTable("RecenzijaOdgovor", (string)null);
                 });
 
+            modelBuilder.Entity("eVet.Services.Database.ResetLozinke", b =>
+                {
+                    b.Property<int>("ResetLozinkeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResetLozinkeId"));
+
+                    b.Property<int>("BrojPokusaja")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DatumIsteka")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("DatumKreiranja")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getutcdate())", "DF_ResetLozinke_DatumKreiranja");
+
+                    b.Property<bool>("JeIskoristen")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("KodHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("KodSalt")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("KorisnikId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ResetLozinkeId");
+
+                    b.HasIndex(new[] { "KorisnikId", "JeIskoristen" }, "IX_ResetLozinke_Korisnik");
+
+                    b.ToTable("ResetLozinke", (string)null);
+                });
+
             modelBuilder.Entity("eVet.Services.Database.Specijalnost", b =>
                 {
                     b.Property<int>("SpecijalnostId")
@@ -1818,6 +1860,18 @@ namespace eVet.Services.Migrations
                     b.Navigation("Korisnik");
 
                     b.Navigation("Recenzija");
+                });
+
+            modelBuilder.Entity("eVet.Services.Database.ResetLozinke", b =>
+                {
+                    b.HasOne("eVet.Services.Database.Korisnik", "Korisnik")
+                        .WithMany()
+                        .HasForeignKey("KorisnikId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_ResetLozinke_Korisnik");
+
+                    b.Navigation("Korisnik");
                 });
 
             modelBuilder.Entity("eVet.Services.Database.StavkaTermina", b =>

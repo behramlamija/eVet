@@ -9,6 +9,10 @@ namespace eVet.Services
 
         Task LogoutAsync(CancellationToken cancellationToken = default);
 
+        Task ZatraziResetLozinkeAsync(ZaboravljenaLozinkaRequest request, CancellationToken cancellationToken = default);
+
+        Task ResetujLozinkuAsync(ResetLozinkeRequest request, CancellationToken cancellationToken = default);
+
         Task<bool> IsSecurityStampValidAsync(int korisnikId, string securityStamp, CancellationToken cancellationToken = default);
     }
 }

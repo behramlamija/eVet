@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\eVet.Model\eVet.Model.csproj" />
+    <ProjectReference Include="..\eVet.Messaging\eVet.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

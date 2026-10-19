@@ -35,6 +35,23 @@ namespace eVet.API.Controllers
             return _korisniciService.RegistracijaAsync(request, cancellationToken);
         }
 
+        // Anonimni jer korisnik koji je zaboravio lozinku nije prijavljen; odgovor ne otkriva da li e-mail postoji.
+        [AllowAnonymous]
+        [HttpPost("zaboravljena-lozinka")]
+        public async Task<IActionResult> ZaboravljenaLozinka(ZaboravljenaLozinkaRequest request, CancellationToken cancellationToken)
+        {
+            await _authService.ZatraziResetLozinkeAsync(request, cancellationToken);
+            return NoContent();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reset-lozinke")]
+        public async Task<IActionResult> ResetLozinke(ResetLozinkeRequest request, CancellationToken cancellationToken)
+        {
+            await _authService.ResetujLozinkuAsync(request, cancellationToken);
+            return NoContent();
+        }
+
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {

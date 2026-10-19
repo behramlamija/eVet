@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\eVet.Services\eVet.Services.csproj" />
+    <ProjectReference Include="..\eVet.Messaging\eVet.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

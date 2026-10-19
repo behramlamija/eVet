@@ -1,9 +1,11 @@
 using DotNetEnv;
 using eVet.API.Infrastructure;
+using eVet.Messaging;
 using eVet.Model.Responses;
 using eVet.Services;
 using eVet.Services.Database;
 using eVet.Services.Slike;
+using eVet.Services.Security;
 using eVet.Services.Termini;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +47,18 @@ builder.Services.AddScoped<IRecenzijeService, RecenzijeService>();
 builder.Services.AddScoped<IObavijestiService, ObavijestiService>();
 builder.Services.AddScoped<IStatistikaService, StatistikaService>();
 builder.Services.AddScoped<ISlikeService, SlikeService>();
+builder.Services.AddScoped<INotifikacijeService, NotifikacijeService>();
+builder.Services.AddSingleton<IPorukePublisher, RabbitMqPublisher>();
+
+builder.Services.AddOptions<RabbitMqSettings>()
+    .BindConfiguration(RabbitMqSettings.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<ResetLozinkeSettings>()
+    .BindConfiguration(ResetLozinkeSettings.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.Services.AddOptions<TerminiSettings>()
     .BindConfiguration(TerminiSettings.SectionName)

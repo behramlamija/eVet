@@ -18,12 +18,14 @@ namespace eVet.Services.Termini
         private const int SifraDuzina = 8;
 
         private readonly ICurrentUserService _currentUser;
+        private readonly INotifikacijeService _notifikacije;
         private readonly TerminiSettings _settings;
         private readonly TimeZoneInfo _vremenskaZona;
 
-        public TerminiService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, IOptions<TerminiSettings> settings) : base(context, mapper)
+        public TerminiService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, INotifikacijeService notifikacije, IOptions<TerminiSettings> settings) : base(context, mapper)
         {
             _currentUser = currentUser;
+            _notifikacije = notifikacije;
             _settings = settings.Value;
             _vremenskaZona = TimeZoneInfo.FindSystemTimeZoneById(_settings.VremenskaZona);
         }
@@ -157,9 +159,9 @@ namespace eVet.Services.Termini
                 aktiviranaPromocija.Iskoristena = true;
             }
 
-            NotifikacijeHelper.Dodaj(Context, veterinar.KorisnikId, "Novi zahtjev za termin",
+            _notifikacije.Dodaj(veterinar, "Novi zahtjev za termin",
                 $"{klijent.Ime} {klijent.Prezime} je zatražio/la termin {termin.Sifra} za ljubimca {ljubimac.Ime}, {Formatiraj(termin)}.");
-            NotifikacijeHelper.Dodaj(Context, klijentId, "Zahtjev za termin je zaprimljen",
+            _notifikacije.Dodaj(klijent, "Zahtjev za termin je zaprimljen",
                 $"Termin {termin.Sifra} ({Formatiraj(termin)}) čeka potvrdu veterinara.");
 
             // Provjera zauzetosti i upis moraju biti atomarni, inače dva klijenta mogu istovremeno rezervisati isti termin.
@@ -175,6 +177,8 @@ namespace eVet.Services.Termini
                 await transaction.CommitAsync(cancellationToken);
             });
 
+            await _notifikacije.PosaljiEmailoveAsync(cancellationToken);
+
             return Mapper.Map<Model.Termini>(termin);
         }
 
@@ -182,7 +186,7 @@ namespace eVet.Services.Termini
         {
             return PromijeniStatusAsync(id, StatusTermina.Potvrdjen, null, termin =>
             {
-                NotifikacijeHelper.Dodaj(Context, termin.KorisnikId, "Termin je potvrđen",
+                _notifikacije.Dodaj(termin.Korisnik, "Termin je potvrđen",
                     $"Vaš termin {termin.Sifra} ({Formatiraj(termin)}) je potvrdio/la {termin.Veterinar.Ime} {termin.Veterinar.Prezime}.");
             }, cancellationToken);
         }
@@ -194,7 +198,7 @@ namespace eVet.Services.Termini
                 ProvjeriDaNijePlacen(termin, "odbiti");
                 VratiPromociju(termin);
 
-                NotifikacijeHelper.Dodaj(Context, termin.KorisnikId, "Termin je odbijen",
+                _notifikacije.Dodaj(termin.Korisnik, "Termin je odbijen",
                     $"Vaš zahtjev za termin {termin.Sifra} ({Formatiraj(termin)}) je odbijen. Razlog: {request.Razlog}");
             }, cancellationToken);
         }
@@ -219,12 +223,12 @@ namespace eVet.Services.Termini
 
                 if (otkazujeKlijent)
                 {
-                    NotifikacijeHelper.Dodaj(Context, termin.VeterinarId, "Termin je otkazan",
+                    _notifikacije.Dodaj(termin.Veterinar, "Termin je otkazan",
                         $"Klijent {termin.Korisnik.Ime} {termin.Korisnik.Prezime} je otkazao/la termin {termin.Sifra} ({Formatiraj(termin)}). Razlog: {request.Razlog}");
                 }
                 else
                 {
-                    NotifikacijeHelper.Dodaj(Context, termin.KorisnikId, "Termin je otkazan",
+                    _notifikacije.Dodaj(termin.Korisnik, "Termin je otkazan",
                         $"Vaš termin {termin.Sifra} ({Formatiraj(termin)}) je otkazan od strane stanice. Razlog: {request.Razlog}");
                 }
             }, cancellationToken);
@@ -239,7 +243,7 @@ namespace eVet.Services.Termini
                     throw new BusinessException("Termin nije moguće označiti završenim prije njegovog početka.");
                 }
 
-                NotifikacijeHelper.Dodaj(Context, termin.KorisnikId, "Termin je završen",
+                _notifikacije.Dodaj(termin.Korisnik, "Termin je završen",
                     $"Termin {termin.Sifra} za ljubimca {termin.Ljubimac.Ime} je završen. Ocijenite uslugu i veterinara u historiji termina.");
             }, cancellationToken);
         }
@@ -324,6 +328,7 @@ namespace eVet.Services.Termini
             termin.RazlogPromjeneStatusa = razlog;
 
             await Context.SaveChangesAsync(cancellationToken);
+            await _notifikacije.PosaljiEmailoveAsync(cancellationToken);
 
             return Mapper.Map<Model.Termini>(termin);
         }

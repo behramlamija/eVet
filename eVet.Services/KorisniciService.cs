@@ -15,9 +15,11 @@ namespace eVet.Services
     {
         private readonly ICurrentUserService _currentUser;
         private readonly IMemoryCache _cache;
+        private readonly INotifikacijeService _notifikacije;
 
-        public KorisniciService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, IMemoryCache cache) : base(context, mapper)
+        public KorisniciService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, IMemoryCache cache, INotifikacijeService notifikacije) : base(context, mapper)
         {
+            _notifikacije = notifikacije;
             _currentUser = currentUser;
             _cache = cache;
         }
@@ -77,7 +79,7 @@ namespace eVet.Services
             await ProvjeriJedinstvenostAsync(request.KorisnickoIme, request.Email, null, cancellationToken);
             await PostaviUlogeAsync(entity, request.UlogeIds, cancellationToken);
             await PostaviPodatkeZaposlenjaAsync(entity, request.GradRodjenjaId, request.SpecijalnostId, cancellationToken);
-            PostaviNovuLozinku(entity, request.Lozinka);
+            entity.PostaviLozinku(request.Lozinka);
             entity.DatumRegistracije = DateTime.UtcNow;
         }
 
@@ -106,13 +108,13 @@ namespace eVet.Services
 
             if (!string.IsNullOrEmpty(request.Lozinka))
             {
-                PostaviNovuLozinku(entity, request.Lozinka);
+                entity.PostaviLozinku(request.Lozinka);
                 ponistiPrijave = true;
             }
 
             if (ponistiPrijave)
             {
-                entity.SecurityStamp = Guid.NewGuid().ToString();
+                entity.PonistiPrijave();
                 SecurityStampCache.Ponisti(_cache, entity.KorisnikId);
             }
         }
@@ -135,7 +137,7 @@ namespace eVet.Services
                 throw new BusinessException($"Korisnika nije moguće obrisati jer ima aktivnih termina ({brojAktivnihTermina}). Termine je potrebno najprije završiti ili otkazati.");
             }
 
-            entity.SecurityStamp = Guid.NewGuid().ToString();
+            entity.PonistiPrijave();
             SecurityStampCache.Ponisti(_cache, entity.KorisnikId);
         }
 
@@ -161,12 +163,15 @@ namespace eVet.Services
             var entity = Mapper.Map<Korisnik>(request);
             var klijentUloga = await Context.Uloge.FirstAsync(u => u.Naziv == Uloge.Klijent, cancellationToken);
             entity.KorisniciUloge.Add(new KorisnikUloga { Uloga = klijentUloga });
-            PostaviNovuLozinku(entity, request.Lozinka);
+            entity.PostaviLozinku(request.Lozinka);
             entity.JeAktivan = true;
             entity.DatumRegistracije = DateTime.UtcNow;
 
             Context.Korisnici.Add(entity);
+            _notifikacije.Dodaj(entity, "Dobrodošli u PetCity",
+                $"Poštovani/a {entity.Ime}, vaš korisnički račun ({entity.KorisnickoIme}) je uspješno kreiran. Sada možete zakazivati termine za svoje ljubimce.");
             await Context.SaveChangesAsync(cancellationToken);
+            await _notifikacije.PosaljiEmailoveAsync(cancellationToken);
 
             return Mapper.Map<Model.Korisnici>(entity);
         }
@@ -192,12 +197,12 @@ namespace eVet.Services
         {
             var entity = await GetEntityForUpdateAsync(_currentUser.KorisnikId, cancellationToken);
 
-            if (!PasswordHasher.Verify(request.StaraLozinka, entity.LozinkaSalt, entity.LozinkaHash))
+            if (!entity.ProvjeriLozinku(request.StaraLozinka))
             {
                 throw new BusinessException("Trenutna lozinka nije ispravna.");
             }
 
-            PostaviNovuLozinku(entity, request.NovaLozinka);
+            entity.PostaviLozinku(request.NovaLozinka);
             await Context.SaveChangesAsync(cancellationToken);
         }
 
@@ -249,13 +254,6 @@ namespace eVet.Services
                 ? await Context.Specijalnosti.FirstOrDefaultAsync(x => x.SpecijalnostId == specijalnostId, cancellationToken)
                     ?? throw new BusinessException("Odabrana specijalnost ne postoji.")
                 : null;
-        }
-
-        private static void PostaviNovuLozinku(Korisnik entity, string lozinka)
-        {
-            entity.LozinkaSalt = PasswordHasher.GenerateSalt();
-            entity.LozinkaHash = PasswordHasher.Hash(lozinka, entity.LozinkaSalt);
-            entity.SecurityStamp ??= Guid.NewGuid().ToString();
         }
     }
 }
