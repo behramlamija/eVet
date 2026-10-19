@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/korpa_provider.dart';
+import '../widgets/preporuke_sekcija.dart';
 
 /// Detalji usluge s dodavanjem u korpu za rezervaciju.
 class UslugaDetaljiScreen extends StatelessWidget {
@@ -64,6 +65,8 @@ class UslugaDetaljiScreen extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 32),
+          PreporukeSekcija(key: ValueKey(usluga.uslugaId), uslugeIds: [usluga.uslugaId]),
         ],
       ),
     );

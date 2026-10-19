@@ -1085,6 +1085,328 @@ namespace eVet.Services.Migrations
                         .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("StavkeTermina", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            StavkaTerminaId = 1001,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1001,
+                            UslugaId = 1
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1002,
+                            Cijena = 35m,
+                            IsDeleted = false,
+                            TerminId = 1001,
+                            UslugaId = 3
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1003,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1002,
+                            UslugaId = 1
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1004,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1002,
+                            UslugaId = 4
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1005,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1003,
+                            UslugaId = 5
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1006,
+                            Cijena = 30m,
+                            IsDeleted = false,
+                            TerminId = 1003,
+                            UslugaId = 6
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1007,
+                            Cijena = 10m,
+                            IsDeleted = false,
+                            TerminId = 1003,
+                            UslugaId = 7
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1008,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1004,
+                            UslugaId = 5
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1009,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1004,
+                            UslugaId = 8
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1010,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1005,
+                            UslugaId = 1
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1011,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1005,
+                            UslugaId = 12
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1012,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1006,
+                            UslugaId = 5
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1013,
+                            Cijena = 30m,
+                            IsDeleted = false,
+                            TerminId = 1006,
+                            UslugaId = 6
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1014,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1006,
+                            UslugaId = 8
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1015,
+                            Cijena = 70m,
+                            IsDeleted = false,
+                            TerminId = 1007,
+                            UslugaId = 9
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1016,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1007,
+                            UslugaId = 8
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1017,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1008,
+                            UslugaId = 1
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1018,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1008,
+                            UslugaId = 12
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1019,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1009,
+                            UslugaId = 12
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1020,
+                            Cijena = 200m,
+                            IsDeleted = false,
+                            TerminId = 1009,
+                            UslugaId = 10
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1021,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1010,
+                            UslugaId = 5
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1022,
+                            Cijena = 10m,
+                            IsDeleted = false,
+                            TerminId = 1010,
+                            UslugaId = 7
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1023,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1011,
+                            UslugaId = 1
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1024,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1011,
+                            UslugaId = 4
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1025,
+                            Cijena = 35m,
+                            IsDeleted = false,
+                            TerminId = 1011,
+                            UslugaId = 3
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1026,
+                            Cijena = 70m,
+                            IsDeleted = false,
+                            TerminId = 1012,
+                            UslugaId = 9
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1027,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1012,
+                            UslugaId = 8
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1028,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1013,
+                            UslugaId = 5
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1029,
+                            Cijena = 30m,
+                            IsDeleted = false,
+                            TerminId = 1013,
+                            UslugaId = 6
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1030,
+                            Cijena = 10m,
+                            IsDeleted = false,
+                            TerminId = 1013,
+                            UslugaId = 7
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1031,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1014,
+                            UslugaId = 12
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1032,
+                            Cijena = 150m,
+                            IsDeleted = false,
+                            TerminId = 1014,
+                            UslugaId = 11
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1033,
+                            Cijena = 30m,
+                            IsDeleted = false,
+                            TerminId = 1015,
+                            UslugaId = 6
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1034,
+                            Cijena = 10m,
+                            IsDeleted = false,
+                            TerminId = 1015,
+                            UslugaId = 7
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1035,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1016,
+                            UslugaId = 5
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1036,
+                            Cijena = 50m,
+                            IsDeleted = false,
+                            TerminId = 1016,
+                            UslugaId = 8
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1037,
+                            Cijena = 25m,
+                            IsDeleted = false,
+                            TerminId = 1017,
+                            UslugaId = 2
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1038,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1017,
+                            UslugaId = 12
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1039,
+                            Cijena = 40m,
+                            IsDeleted = false,
+                            TerminId = 1018,
+                            UslugaId = 1
+                        },
+                        new
+                        {
+                            StavkaTerminaId = 1040,
+                            Cijena = 25m,
+                            IsDeleted = false,
+                            TerminId = 1018,
+                            UslugaId = 2
+                        });
                 });
 
             modelBuilder.Entity("eVet.Services.Database.Terapija", b =>
@@ -1252,6 +1574,404 @@ namespace eVet.Services.Migrations
                         .IsUnique();
 
                     b.ToTable("Termin", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TerminId = 1001,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 1, 29, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 2, 3, 9, 45, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 2, 3),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 1,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0001",
+                            Status = 3,
+                            StatusPromijenioId = 2,
+                            UkupnaCijena = 75m,
+                            UkupnoTrajanje = 45,
+                            VeterinarId = 2,
+                            VrijemeKraja = new TimeOnly(9, 45, 0),
+                            VrijemePocetka = new TimeOnly(9, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1002,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 2, 5, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 2, 10, 10, 45, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 2, 10),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 3,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0002",
+                            Status = 3,
+                            StatusPromijenioId = 3,
+                            UkupnaCijena = 90m,
+                            UkupnoTrajanje = 45,
+                            VeterinarId = 3,
+                            VrijemeKraja = new TimeOnly(10, 45, 0),
+                            VrijemePocetka = new TimeOnly(10, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1003,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 2, 16, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 2, 21, 12, 55, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 2, 21),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 1,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0003",
+                            Status = 3,
+                            StatusPromijenioId = 4,
+                            UkupnaCijena = 90m,
+                            UkupnoTrajanje = 115,
+                            VeterinarId = 4,
+                            VrijemeKraja = new TimeOnly(12, 55, 0),
+                            VrijemePocetka = new TimeOnly(11, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1004,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 2, 27, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 3, 4, 11, 15, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 3, 4),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 3,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0004",
+                            Status = 3,
+                            StatusPromijenioId = 4,
+                            UkupnaCijena = 100m,
+                            UkupnoTrajanje = 105,
+                            VeterinarId = 4,
+                            VrijemeKraja = new TimeOnly(11, 15, 0),
+                            VrijemePocetka = new TimeOnly(9, 30, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1005,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 3, 7, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 3, 12, 13, 45, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 3, 12),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 2,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0005",
+                            Status = 3,
+                            StatusPromijenioId = 2,
+                            UkupnaCijena = 80m,
+                            UkupnoTrajanje = 45,
+                            VeterinarId = 2,
+                            VrijemeKraja = new TimeOnly(13, 45, 0),
+                            VrijemePocetka = new TimeOnly(13, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1006,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 3, 20, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 3, 25, 12, 30, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 3, 25),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 3,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0006",
+                            Status = 3,
+                            StatusPromijenioId = 4,
+                            UkupnaCijena = 130m,
+                            UkupnoTrajanje = 150,
+                            VeterinarId = 4,
+                            VrijemeKraja = new TimeOnly(12, 30, 0),
+                            VrijemePocetka = new TimeOnly(10, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1007,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 4, 2, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 4, 7, 10, 25, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 4, 7),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 1,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0007",
+                            Status = 3,
+                            StatusPromijenioId = 3,
+                            UkupnaCijena = 120m,
+                            UkupnoTrajanje = 85,
+                            VeterinarId = 3,
+                            VrijemeKraja = new TimeOnly(10, 25, 0),
+                            VrijemePocetka = new TimeOnly(9, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1008,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 4, 10, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 4, 15, 12, 45, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 4, 15),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 4,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0008",
+                            Status = 3,
+                            StatusPromijenioId = 2,
+                            UkupnaCijena = 80m,
+                            UkupnoTrajanje = 45,
+                            VeterinarId = 2,
+                            VrijemeKraja = new TimeOnly(12, 45, 0),
+                            VrijemePocetka = new TimeOnly(12, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1009,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 4, 23, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 4, 28, 10, 15, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 4, 28),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 2,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0009",
+                            Status = 3,
+                            StatusPromijenioId = 3,
+                            UkupnaCijena = 240m,
+                            UkupnoTrajanje = 105,
+                            VeterinarId = 3,
+                            VrijemeKraja = new TimeOnly(10, 15, 0),
+                            VrijemePocetka = new TimeOnly(8, 30, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1010,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 5, 4, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 5, 9, 12, 10, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 5, 9),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 3,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0010",
+                            Status = 3,
+                            StatusPromijenioId = 4,
+                            UkupnaCijena = 60m,
+                            UkupnoTrajanje = 70,
+                            VeterinarId = 4,
+                            VrijemeKraja = new TimeOnly(12, 10, 0),
+                            VrijemePocetka = new TimeOnly(11, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1011,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 5, 15, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 5, 20, 10, 0, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 5, 20),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 1,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0011",
+                            Status = 3,
+                            StatusPromijenioId = 2,
+                            UkupnaCijena = 125m,
+                            UkupnoTrajanje = 60,
+                            VeterinarId = 2,
+                            VrijemeKraja = new TimeOnly(10, 0, 0),
+                            VrijemePocetka = new TimeOnly(9, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1012,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 5, 28, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 6, 2, 15, 25, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 6, 2),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 3,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0012",
+                            Status = 3,
+                            StatusPromijenioId = 3,
+                            UkupnaCijena = 120m,
+                            UkupnoTrajanje = 85,
+                            VeterinarId = 3,
+                            VrijemeKraja = new TimeOnly(15, 25, 0),
+                            VrijemePocetka = new TimeOnly(14, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1013,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 6, 13, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 6, 18, 11, 55, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 6, 18),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 1,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0013",
+                            Status = 3,
+                            StatusPromijenioId = 4,
+                            UkupnaCijena = 90m,
+                            UkupnoTrajanje = 115,
+                            VeterinarId = 4,
+                            VrijemeKraja = new TimeOnly(11, 55, 0),
+                            VrijemePocetka = new TimeOnly(10, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1014,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 7, 1, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 7, 6, 10, 15, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 7, 6),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 3,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0014",
+                            Status = 3,
+                            StatusPromijenioId = 2,
+                            UkupnaCijena = 190m,
+                            UkupnoTrajanje = 75,
+                            VeterinarId = 2,
+                            VrijemeKraja = new TimeOnly(10, 15, 0),
+                            VrijemePocetka = new TimeOnly(9, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1015,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 7, 17, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 7, 22, 13, 25, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 7, 22),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 2,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0015",
+                            Status = 3,
+                            StatusPromijenioId = 4,
+                            UkupnaCijena = 40m,
+                            UkupnoTrajanje = 55,
+                            VeterinarId = 4,
+                            VrijemeKraja = new TimeOnly(13, 25, 0),
+                            VrijemePocetka = new TimeOnly(12, 30, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1016,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 8, 6, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 8, 11, 11, 45, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 8, 11),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 3,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0016",
+                            Status = 3,
+                            StatusPromijenioId = 4,
+                            UkupnaCijena = 100m,
+                            UkupnoTrajanje = 105,
+                            VeterinarId = 4,
+                            VrijemeKraja = new TimeOnly(11, 45, 0),
+                            VrijemePocetka = new TimeOnly(10, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1017,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 8, 27, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 9, 1, 9, 35, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 9, 1),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 5,
+                            LjubimacId = 1,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0017",
+                            Status = 3,
+                            StatusPromijenioId = 2,
+                            UkupnaCijena = 65m,
+                            UkupnoTrajanje = 35,
+                            VeterinarId = 2,
+                            VrijemeKraja = new TimeOnly(9, 35, 0),
+                            VrijemePocetka = new TimeOnly(9, 0, 0)
+                        },
+                        new
+                        {
+                            TerminId = 1018,
+                            CijenaPrevoza = 0m,
+                            DatumKreiranja = new DateTime(2026, 9, 10, 18, 0, 0, 0, DateTimeKind.Utc),
+                            DatumPromjeneStatusa = new DateTime(2026, 9, 15, 11, 50, 0, 0, DateTimeKind.Utc),
+                            DatumTermina = new DateOnly(2026, 9, 15),
+                            IsDeleted = false,
+                            IznosPopusta = 0m,
+                            JePrevoz = false,
+                            KorisnikId = 6,
+                            LjubimacId = 4,
+                            NacinPlacanjaId = 1,
+                            Sifra = "HIST0018",
+                            Status = 3,
+                            StatusPromijenioId = 3,
+                            UkupnaCijena = 65m,
+                            UkupnoTrajanje = 50,
+                            VeterinarId = 3,
+                            VrijemeKraja = new TimeOnly(11, 50, 0),
+                            VrijemePocetka = new TimeOnly(11, 0, 0)
+                        });
                 });
 
             modelBuilder.Entity("eVet.Services.Database.Uloga", b =>

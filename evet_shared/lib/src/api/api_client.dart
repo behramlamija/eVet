@@ -30,12 +30,14 @@ class ApiClient {
   Map<String, String> get _jsonHeaders => {...authHeaders, HttpHeaders.contentTypeHeader: 'application/json'};
 
   Uri uri(String path, [Map<String, dynamic>? query]) {
-    final parametri = <String, String>{};
+    final parametri = <String, dynamic>{};
     query?.forEach((kljuc, vrijednost) {
-      if (vrijednost == null || (vrijednost is String && vrijednost.trim().isEmpty)) return;
+      if (vrijednost == null || (vrijednost is String && vrijednost.trim().isEmpty) || (vrijednost is Iterable && vrijednost.isEmpty)) return;
       parametri[kljuc] = switch (vrijednost) {
         DateTime d => formatDatumApi(d),
         Enum e => e.name,
+        // Lista se šalje kao ponovljeni parametar (?id=1&id=2), što ASP.NET veže na List<int>.
+        Iterable i => i.map((e) => e.toString()).toList(),
         _ => vrijednost.toString(),
       };
     });

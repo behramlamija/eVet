@@ -1,4 +1,5 @@
 using eVet.Model.Enums;
+using Konstante = eVet.Model.Constants;
 using eVet.Services.Security;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,7 +38,8 @@ public partial class EVetDbContext
 
         var datumObjave = new DateTime(2026, 1, 10, 8, 0, 0, DateTimeKind.Utc);
 
-        modelBuilder.Entity<Usluga>().HasData(
+        var usluge = new[]
+        {
             new Usluga { UslugaId = 1, VrstaId = 1, Naziv = "Opći pregled", Opis = "Kompletan klinički pregled ljubimca uz savjetovanje vlasnika.", Cijena = 40m, Trajanje = 30, DatumObjavljivanja = datumObjave },
             new Usluga { UslugaId = 2, VrstaId = 1, Naziv = "Kontrolni pregled", Opis = "Kontrola nakon terapije ili intervencije.", Cijena = 25m, Trajanje = 20, DatumObjavljivanja = datumObjave },
             new Usluga { UslugaId = 3, VrstaId = 2, Naziv = "Vakcinacija protiv bjesnila", Opis = "Obavezna godišnja vakcinacija uz upis u pasoš ljubimca.", Cijena = 35m, Trajanje = 15, DatumObjavljivanja = datumObjave },
@@ -49,7 +51,81 @@ public partial class EVetDbContext
             new Usluga { UslugaId = 9, VrstaId = 4, Naziv = "Čišćenje kamenca", Opis = "Ultrazvučno uklanjanje zubnog kamenca.", Cijena = 70m, Trajanje = 40, DatumObjavljivanja = datumObjave },
             new Usluga { UslugaId = 10, VrstaId = 5, Naziv = "Sterilizacija", Opis = "Hirurški zahvat uz anesteziju i postoperativnu njegu.", Cijena = 200m, Trajanje = 90, DatumObjavljivanja = datumObjave },
             new Usluga { UslugaId = 11, VrstaId = 5, Naziv = "Kastracija", Opis = "Hirurški zahvat uz anesteziju i postoperativnu njegu.", Cijena = 150m, Trajanje = 60, DatumObjavljivanja = datumObjave },
-            new Usluga { UslugaId = 12, VrstaId = 6, Naziv = "Kompletna krvna slika", Opis = "Laboratorijska analiza krvi s nalazom isti dan.", Cijena = 40m, Trajanje = 15, DatumObjavljivanja = datumObjave });
+            new Usluga { UslugaId = 12, VrstaId = 6, Naziv = "Kompletna krvna slika", Opis = "Laboratorijska analiza krvi s nalazom isti dan.", Cijena = 40m, Trajanje = 15, DatumObjavljivanja = datumObjave }
+        };
+        modelBuilder.Entity<Usluga>().HasData(usluge);
+
+        SeedHistorijeTermina(modelBuilder, usluge);
+    }
+
+    // Završeni termini iz prošlosti: daju podatke za statistiku i za sistem preporuke
+    // (usluge koje su rezervisane zajedno u istom terminu).
+    private static void SeedHistorijeTermina(ModelBuilder modelBuilder, Usluga[] usluge)
+    {
+        // (klijent, ljubimac, veterinar, datum, početak, usluge)
+        var historija = new (int Korisnik, int Ljubimac, int Veterinar, DateOnly Datum, TimeOnly Pocetak, int[] Usluge)[]
+        {
+            (5, 1, 2, new DateOnly(2026, 2, 3), new TimeOnly(9, 0), new[] { 1, 3 }),
+            (6, 3, 3, new DateOnly(2026, 2, 10), new TimeOnly(10, 0), new[] { 1, 4 }),
+            (5, 1, 4, new DateOnly(2026, 2, 21), new TimeOnly(11, 0), new[] { 5, 6, 7 }),
+            (6, 3, 4, new DateOnly(2026, 3, 4), new TimeOnly(9, 30), new[] { 5, 8 }),
+            (5, 2, 2, new DateOnly(2026, 3, 12), new TimeOnly(13, 0), new[] { 1, 12 }),
+            (6, 3, 4, new DateOnly(2026, 3, 25), new TimeOnly(10, 0), new[] { 5, 6, 8 }),
+            (5, 1, 3, new DateOnly(2026, 4, 7), new TimeOnly(9, 0), new[] { 9, 8 }),
+            (6, 4, 2, new DateOnly(2026, 4, 15), new TimeOnly(12, 0), new[] { 1, 12 }),
+            (5, 2, 3, new DateOnly(2026, 4, 28), new TimeOnly(8, 30), new[] { 12, 10 }),
+            (6, 3, 4, new DateOnly(2026, 5, 9), new TimeOnly(11, 0), new[] { 5, 7 }),
+            (5, 1, 2, new DateOnly(2026, 5, 20), new TimeOnly(9, 0), new[] { 1, 4, 3 }),
+            (6, 3, 3, new DateOnly(2026, 6, 2), new TimeOnly(14, 0), new[] { 9, 8 }),
+            (5, 1, 4, new DateOnly(2026, 6, 18), new TimeOnly(10, 0), new[] { 5, 6, 7 }),
+            (6, 3, 2, new DateOnly(2026, 7, 6), new TimeOnly(9, 0), new[] { 12, 11 }),
+            (5, 2, 4, new DateOnly(2026, 7, 22), new TimeOnly(12, 30), new[] { 6, 7 }),
+            (6, 3, 4, new DateOnly(2026, 8, 11), new TimeOnly(10, 0), new[] { 5, 8 }),
+            (5, 1, 2, new DateOnly(2026, 9, 1), new TimeOnly(9, 0), new[] { 2, 12 }),
+            (6, 4, 3, new DateOnly(2026, 9, 15), new TimeOnly(11, 0), new[] { 1, 2 })
+        };
+
+        // ID-evi počinju od 1001 da se seed ne sudari s terminima već kreiranim kroz aplikaciju u postojećoj bazi.
+        const int PrviId = 1001;
+        var cjenovnik = usluge.ToDictionary(x => x.UslugaId);
+        var termini = new List<Termin>();
+        var stavke = new List<StavkaTermina>();
+
+        for (int i = 0; i < historija.Length; i++)
+        {
+            var t = historija[i];
+            var terminId = PrviId + i;
+            var odabrane = t.Usluge.Select(id => cjenovnik[id]).ToList();
+            var trajanje = odabrane.Sum(x => x.Trajanje);
+            var datumKreiranja = t.Datum.AddDays(-5).ToDateTime(new TimeOnly(18, 0), DateTimeKind.Utc);
+
+            termini.Add(new Termin
+            {
+                TerminId = terminId,
+                KorisnikId = t.Korisnik,
+                VeterinarId = t.Veterinar,
+                LjubimacId = t.Ljubimac,
+                Sifra = $"HIST{i + 1:D4}",
+                DatumTermina = t.Datum,
+                VrijemePocetka = t.Pocetak,
+                VrijemeKraja = t.Pocetak.AddMinutes(trajanje),
+                UkupnoTrajanje = trajanje,
+                UkupnaCijena = odabrane.Sum(x => x.Cijena),
+                Status = StatusTermina.Zavrsen,
+                NacinPlacanjaId = Konstante.NaciniPlacanja.Gotovina,
+                DatumKreiranja = datumKreiranja,
+                DatumPromjeneStatusa = t.Datum.ToDateTime(t.Pocetak.AddMinutes(trajanje), DateTimeKind.Utc),
+                StatusPromijenioId = t.Veterinar
+            });
+
+            foreach (var usluga in odabrane)
+            {
+                stavke.Add(new StavkaTermina { StavkaTerminaId = PrviId + stavke.Count, TerminId = terminId, UslugaId = usluga.UslugaId, Cijena = usluga.Cijena });
+            }
+        }
+
+        modelBuilder.Entity<Termin>().HasData(termini);
+        modelBuilder.Entity<StavkaTermina>().HasData(stavke);
     }
 
     private static Korisnik Veterinar(Korisnik korisnik, DateOnly datumRodjenja, int gradRodjenjaId, DateOnly datumZaposlenja, string zvanje, int specijalnostId)
