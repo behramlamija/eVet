@@ -1,5 +1,7 @@
 <Solution>
   <Project Path="eVet.API/eVet.API.csproj" />
   <Project Path="eVet.Services/eVet.Services.csproj" />
+  <Project Path="eVet.Messaging/eVet.Messaging.csproj" />
   <Project Path="eVet.Model/eVet.Model.csproj" />
+  <Project Path="eVet.Worker/eVet.Worker.csproj" />
 </Solution>

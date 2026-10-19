@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'registracija_screen.dart';
+import 'zaboravljena_lozinka_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -51,6 +52,11 @@ class _LoginScreenState extends State<LoginScreen> {
       _korisnickoIme.text = korisnickoIme;
       _lozinka.clear();
     }
+  }
+
+  Future<void> _zaboravljenaLozinka() async {
+    final email = await Navigator.of(context).push<String>(MaterialPageRoute(builder: (_) => const ZaboravljenaLozinkaScreen()));
+    if (email != null) _lozinka.clear();
   }
 
   @override
@@ -106,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         : const Text('Prijavi se'),
                   ),
                   const SizedBox(height: 8),
+                  TextButton(onPressed: _ucitava ? null : _zaboravljenaLozinka, child: const Text('Zaboravili ste lozinku?')),
                   TextButton(onPressed: _ucitava ? null : _registracija, child: const Text('Nemate račun? Registrujte se')),
                 ],
               ),

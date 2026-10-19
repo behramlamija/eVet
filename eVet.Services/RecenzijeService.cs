@@ -12,10 +12,12 @@ namespace eVet.Services
     public class RecenzijeService : BaseService<Model.Recenzije, RecenzijeSearchObject, Recenzija>, IRecenzijeService
     {
         private readonly ICurrentUserService _currentUser;
+        private readonly INotifikacijeService _notifikacije;
 
-        public RecenzijeService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser) : base(context, mapper)
+        public RecenzijeService(EVetDbContext context, IMapper mapper, ICurrentUserService currentUser, INotifikacijeService notifikacije) : base(context, mapper)
         {
             _currentUser = currentUser;
+            _notifikacije = notifikacije;
         }
 
         protected override string NazivEntiteta => "Recenzija";
@@ -71,10 +73,11 @@ namespace eVet.Services
             };
 
             Context.Recenzije.Add(recenzija);
-            NotifikacijeHelper.Dodaj(Context, termin.VeterinarId, "Nova recenzija",
+            _notifikacije.Dodaj(termin.Veterinar, "Nova recenzija",
                 $"{termin.Korisnik.Ime} {termin.Korisnik.Prezime} je ocijenio/la termin {termin.Sifra}.");
 
             await Context.SaveChangesAsync(cancellationToken);
+            await _notifikacije.PosaljiEmailoveAsync(cancellationToken);
 
             return Mapper.Map<Model.Recenzije>(recenzija);
         }
@@ -102,10 +105,11 @@ namespace eVet.Services
                 DatumDodavanja = DateTime.UtcNow
             });
 
-            NotifikacijeHelper.Dodaj(Context, recenzija.KorisnikId, "Odgovor na vašu recenziju",
+            _notifikacije.Dodaj(recenzija.Korisnik, "Odgovor na vašu recenziju",
                 $"Stanica je odgovorila na vašu recenziju termina {recenzija.Termin.Sifra}.");
 
             await Context.SaveChangesAsync(cancellationToken);
+            await _notifikacije.PosaljiEmailoveAsync(cancellationToken);
 
             return Mapper.Map<Model.Recenzije>(recenzija);
         }

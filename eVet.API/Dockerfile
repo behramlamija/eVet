@@ -9,6 +9,7 @@ WORKDIR /src
 COPY ["eVet.API/eVet.API.csproj", "eVet.API/"]
 COPY ["eVet.Services/eVet.Services.csproj", "eVet.Services/"]
 COPY ["eVet.Model/eVet.Model.csproj", "eVet.Model/"]
+COPY ["eVet.Messaging/eVet.Messaging.csproj", "eVet.Messaging/"]
 RUN dotnet restore "./eVet.API/eVet.API.csproj"
 COPY . .
 WORKDIR "/src/eVet.API"

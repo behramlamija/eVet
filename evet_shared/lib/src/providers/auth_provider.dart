@@ -48,6 +48,11 @@ class AuthProvider extends ChangeNotifier {
     return Korisnici.fromJson(await _api.post('Auth/registracija', body: request.toJson()) as Map<String, dynamic>);
   }
 
+  /// Šalje kod za promjenu lozinke na e-mail (ako je e-mail registrovan).
+  Future<void> zatraziResetLozinke(String email) => _api.post('Auth/zaboravljena-lozinka', body: ZaboravljenaLozinkaRequest(email: email).toJson());
+
+  Future<void> resetujLozinku(ResetLozinkeRequest request) => _api.post('Auth/reset-lozinke', body: request.toJson());
+
   /// Odjava poništava token i na serveru, ne samo lokalno.
   Future<void> logout() async {
     try {

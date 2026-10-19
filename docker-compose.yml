@@ -25,8 +25,8 @@ services:
     container_name: evet-rabbitmq
     restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_USER: ${RabbitMq__Username}
+      RABBITMQ_DEFAULT_PASS: ${RabbitMq__Password}
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -35,6 +35,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    networks:
+      - evet-network
+
+  # Lokalni SMTP server za razvoj i pregled rada; poslani mailovi se vide na http://localhost:8025
+  evet-mailpit:
+    image: axllent/mailpit:v1.31.5
+    container_name: evet-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - evet-network
 
@@ -49,6 +60,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__eVetConnection: Server=evet-sql,1433;Database=${DB_NAME};User Id=sa;Password=${SQL_SA_PASSWORD};TrustServerCertificate=True
+      RabbitMq__Host: evet-rabbitmq
     ports:
       - "${API_PORT}:8080"
     depends_on:
@@ -56,6 +68,24 @@ services:
         condition: service_healthy
       evet-rabbitmq:
         condition: service_healthy
+    networks:
+      - evet-network
+
+  evet-worker:
+    build:
+      context: .
+      dockerfile: eVet.Worker/Dockerfile
+    container_name: evet-worker
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      RabbitMq__Host: evet-rabbitmq
+      Smtp__Host: evet-mailpit
+    depends_on:
+      evet-rabbitmq:
+        condition: service_healthy
+      evet-mailpit:
+        condition: service_started
     networks:
       - evet-network
 
