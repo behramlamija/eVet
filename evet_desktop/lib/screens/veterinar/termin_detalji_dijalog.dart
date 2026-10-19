@@ -16,7 +16,7 @@ Future<void> prikaziDetaljeTermina(BuildContext context, Termini t) {
           _Red(Icons.pets, 'Pacijent', t.ljubimacIme),
           _Red(Icons.person_outline, 'Vlasnik', '${t.korisnikIme} ${t.korisnikPrezime}'),
           _Red(Icons.medical_services_outlined, 'Veterinar', '${t.veterinarIme} ${t.veterinarPrezime}'),
-          _Red(Icons.payments_outlined, 'Plaćanje', '${t.nacinPlacanjaNaziv}${t.jePlacen ? ' (plaćeno)' : ''}'),
+          _Red(Icons.payments_outlined, 'Plaćanje', '${t.nacinPlacanjaNaziv}${t.jePlacen ? ' (plaćeno; pri otkazivanju se novac automatski vraća)' : t.jeRefundiran ? ' (novac vraćen)' : ''}'),
           if (t.jePrevoz) _Red(Icons.local_shipping_outlined, 'Prevoz', '${t.adresaPrevoza ?? ''}, ${t.gradPrevozaNaziv ?? ''}'),
           if (t.razlogPromjeneStatusa != null)
             _Red(Icons.info_outline, 'Razlog (${t.statusPromijenioIme ?? ''} ${t.statusPromijenioPrezime ?? ''})', t.razlogPromjeneStatusa!),

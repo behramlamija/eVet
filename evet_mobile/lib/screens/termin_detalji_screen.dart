@@ -2,6 +2,7 @@ import 'package:evet_shared/evet_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'paypal_screen.dart';
 import 'recenzija_screen.dart';
 
 /// Detalji termina klijenta (master-detail) s otkazivanjem i ostavljanjem recenzije.
@@ -36,9 +37,20 @@ class _TerminDetaljiScreenState extends State<TerminDetaljiScreen> {
 
   Future<void> _otkazi(Termini t) async {
     final razlog = await unesiRazlog(context, naslov: 'Otkazivanje termina ${t.sifra}', potvrda: 'Otkaži termin');
+    // Povrat novca izvršava server preko PayPala pri otkazivanju plaćenog termina.
     if (razlog == null || !mounted) return;
     final ok = await izvrsiAkciju(context, () => context.read<TerminiProvider>().otkazi(t.terminId, razlog), uspjeh: 'Termin ${t.sifra} je otkazan.');
     if (ok) {
+      setState(() {
+        _promijenjen = true;
+        _ucitaj();
+      });
+    }
+  }
+
+  Future<void> _plati(Termini t) async {
+    final placen = await platiPayPalom(context, t);
+    if (placen != null && mounted) {
       setState(() {
         _promijenjen = true;
         _ucitaj();
@@ -84,6 +96,7 @@ class _TerminDetaljiScreenState extends State<TerminDetaljiScreen> {
 
             final aktivan = t.status == StatusTermina.naCekanju || t.status == StatusTermina.potvrdjen;
             final dovoljnoRano = _pocetak(t).difference(DateTime.now()) >= Duration(hours: k.minimalnoSatiZaOtkazivanje);
+            final mozePlatiti = aktivan && t.nacinPlacanjaId == NaciniPlacanja.payPal && !t.jePlacen;
 
             return ListView(
               padding: const EdgeInsets.all(16),
@@ -99,6 +112,8 @@ class _TerminDetaljiScreenState extends State<TerminDetaljiScreen> {
                 _red(Icons.pets, 'Ljubimac', t.ljubimacIme),
                 _red(Icons.medical_services_outlined, 'Veterinar', 'Dr. ${t.veterinarIme} ${t.veterinarPrezime}'),
                 _red(Icons.payments_outlined, 'Način plaćanja', t.nacinPlacanjaNaziv),
+                if (t.jePlacen) const _StanjePlacanja(ikona: Icons.verified, tekst: 'Plaćeno', boja: Colors.green),
+                if (t.jeRefundiran) const _StanjePlacanja(ikona: Icons.undo, tekst: 'Novac je vraćen na PayPal račun', boja: EvetBoje.tamnoplava),
                 if (t.jePrevoz) _red(Icons.local_shipping_outlined, 'Prevoz', '${t.adresaPrevoza ?? ''}, ${t.gradPrevozaNaziv ?? ''}'),
                 if (t.razlogPromjeneStatusa != null) _red(Icons.info_outline, 'Napomena uz status', t.razlogPromjeneStatusa!),
                 const Divider(height: 24),
@@ -113,6 +128,15 @@ class _TerminDetaljiScreenState extends State<TerminDetaljiScreen> {
                   trailing: Text(formatNovac(t.ukupnaCijena), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ),
                 const SizedBox(height: 16),
+                if (mozePlatiti) ...[
+                  FilledButton.icon(onPressed: () => _plati(t), icon: const Icon(Icons.account_balance_wallet_outlined), label: const Text('Plati PayPalom')),
+                  const SizedBox(height: 8),
+                ],
+                if (aktivan && t.jePlacen)
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Text('Ako otkažete plaćeni termin, uplaćeni iznos se automatski vraća na vaš PayPal račun.', style: TextStyle(color: EvetBoje.tekstSivi)),
+                  ),
                 if (aktivan)
                   Tooltip(
                     message: dovoljnoRano ? '' : 'Termin je moguće otkazati najkasnije ${k.minimalnoSatiZaOtkazivanje} sati prije početka.',
@@ -141,6 +165,28 @@ class _TerminDetaljiScreenState extends State<TerminDetaljiScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _StanjePlacanja extends StatelessWidget {
+  const _StanjePlacanja({required this.ikona, required this.tekst, required this.boja});
+
+  final IconData ikona;
+  final String tekst;
+  final Color boja;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(ikona, color: boja),
+          const SizedBox(width: 8),
+          Text(tekst, style: TextStyle(color: boja, fontWeight: FontWeight.bold, fontSize: 16)),
+        ],
       ),
     );
   }

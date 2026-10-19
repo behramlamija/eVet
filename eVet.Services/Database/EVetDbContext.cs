@@ -471,6 +471,11 @@ public partial class EVetDbContext : DbContext
 
             entity.HasIndex(e => e.TerminId, "IX_Uplata_TerminId");
 
+            // Najviše jedna otvorena (NaCekanju) ili plaćena (Placeno) uplata po terminu sprječava dvostruko plaćanje.
+            entity.HasIndex(e => e.TerminId, "UQ_Uplata_Termin_Aktivna")
+                .IsUnique()
+                .HasFilter("[Status] IN (1, 2)");
+
             entity.HasIndex(e => e.PayPalOrderId, "UQ_Uplata_PayPalOrderId").IsUnique();
 
             entity.Property(e => e.DatumKreiranja)

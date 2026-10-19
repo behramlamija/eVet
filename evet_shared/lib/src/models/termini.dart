@@ -29,6 +29,7 @@ class Termini {
   final int nacinPlacanjaId;
   final String nacinPlacanjaNaziv;
   final bool jePlacen;
+  final bool jeRefundiran;
   final bool jePrevoz;
   final String? adresaPrevoza;
   final int? gradPrevozaId;
@@ -63,6 +64,7 @@ class Termini {
     required this.nacinPlacanjaId,
     required this.nacinPlacanjaNaziv,
     this.jePlacen = false,
+    this.jeRefundiran = false,
     this.jePrevoz = false,
     this.adresaPrevoza,
     this.gradPrevozaId,
